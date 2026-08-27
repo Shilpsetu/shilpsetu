@@ -1,0 +1,14 @@
+[
+  {"state": "Telangana", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO: state minimum wage notification for handloom weaving"},
+  {"state": "Uttar Pradesh", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Bihar", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Odisha", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Karnataka", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Rajasthan", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "West Bengal", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Gujarat", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Madhya Pradesh", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Maharashtra", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Tamil Nadu", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"},
+  {"state": "Chhattisgarh", "daily_wage": "0", "hours_per_day": "8", "source_ref": "TODO"}
+]

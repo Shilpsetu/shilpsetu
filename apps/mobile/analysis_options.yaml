@@ -1,0 +1,17 @@
+include: package:very_good_analysis/analysis_options.6.0.0.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "lib/l10n/generated/**"
+  errors:
+    missing_required_param: error
+    missing_return: error
+    # An unlocalised string is a bug in an app for non-English speakers.
+    prefer_single_quotes: warning
+
+linter:
+  rules:
+    public_member_api_docs: false
+    lines_longer_than_80_chars: false

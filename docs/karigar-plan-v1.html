@@ -1,0 +1,1008 @@
+<title>Karigar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Devanagari:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&family=Noto+Sans+Telugu:wght@400&display=swap">
+
+<style>
+  :root{
+    --ground:#F6F5F2;
+    --surface:#FFFFFF;
+    --sunk:#EFEDE8;
+    --ink:#15171C;
+    --muted:#5B6068;
+    --faint:#8A8F98;
+    --line:#DEDCD6;
+    --line-strong:#C6C3BA;
+    --indigo:#2E3A73;
+    --indigo-soft:#E6E8F4;
+    --madder:#9B3A2F;
+    --madder-soft:#F4E7E4;
+    --shadow:0 1px 2px rgba(21,23,28,.05), 0 8px 24px -12px rgba(21,23,28,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#101217;
+      --surface:#181B21;
+      --sunk:#1E222A;
+      --ink:#E9E8E4;
+      --muted:#9BA1AB;
+      --faint:#767C86;
+      --line:#292D35;
+      --line-strong:#3A404A;
+      --indigo:#96A5EA;
+      --indigo-soft:#1D2334;
+      --madder:#DE8878;
+      --madder-soft:#2B1E1C;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#101217;
+    --surface:#181B21;
+    --sunk:#1E222A;
+    --ink:#E9E8E4;
+    --muted:#9BA1AB;
+    --faint:#767C86;
+    --line:#292D35;
+    --line-strong:#3A404A;
+    --indigo:#96A5EA;
+    --indigo-soft:#1D2334;
+    --madder:#DE8878;
+    --madder-soft:#2B1E1C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:16px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .shell{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    max-width:1240px;
+    margin:0 auto;
+    padding:0 24px 120px;
+  }
+  @media (min-width:1040px){
+    .shell{grid-template-columns:232px minmax(0,1fr); gap:56px; padding:0 40px 140px}
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{grid-column:1/-1; padding:72px 0 40px; border-bottom:1px solid var(--line)}
+  .eyebrow{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:11.5px; font-weight:500; letter-spacing:.13em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .masthead .eyebrow{color:var(--indigo)}
+  h1{
+    font-family:"IBM Plex Serif",Georgia,serif;
+    font-weight:600; font-size:clamp(2.6rem,6vw,4.1rem); line-height:1.02;
+    letter-spacing:-.022em; margin:14px 0 0; text-wrap:balance;
+  }
+  .lede{
+    max-width:60ch; margin:20px 0 0; font-size:1.115rem; line-height:1.6; color:var(--muted);
+  }
+  .lede strong{color:var(--ink); font-weight:500}
+  .meta{
+    display:flex; flex-wrap:wrap; gap:0 34px; margin-top:34px;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; color:var(--faint);
+  }
+  .meta div{display:flex; flex-direction:column; gap:3px; padding:2px 0}
+  .meta b{color:var(--ink); font-weight:500; letter-spacing:0}
+  .meta span{letter-spacing:.09em; text-transform:uppercase; font-size:10.5px}
+
+  /* ---------- rail ---------- */
+  nav.rail{display:none}
+  @media (min-width:1040px){
+    nav.rail{
+      display:block; position:sticky; top:0; align-self:start;
+      height:100vh; overflow-y:auto; padding:56px 0 40px;
+    }
+    nav.rail ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+    nav.rail a{
+      display:block; padding:5px 0; font-size:13.5px; color:var(--muted);
+      text-decoration:none; border-left:2px solid transparent; padding-left:14px;
+      transition:color .15s, border-color .15s;
+    }
+    nav.rail a:hover,nav.rail a:focus-visible{color:var(--ink); border-left-color:var(--indigo)}
+    nav.rail .grp{
+      font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.13em;
+      text-transform:uppercase; color:var(--faint); padding:22px 0 7px 14px;
+    }
+    nav.rail .grp:first-child{padding-top:0}
+  }
+
+  main{min-width:0; padding-top:56px}
+  section{scroll-margin-top:24px; padding-bottom:12px}
+  section + section{margin-top:66px}
+  h2{
+    font-family:"IBM Plex Serif",Georgia,serif; font-weight:600;
+    font-size:1.72rem; line-height:1.2; letter-spacing:-.014em;
+    margin:10px 0 18px; text-wrap:balance;
+  }
+  h3{
+    font-size:1.055rem; font-weight:600; line-height:1.35; margin:34px 0 10px; letter-spacing:-.005em;
+  }
+  h4{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; font-weight:500;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:26px 0 10px;
+  }
+  p{margin:0 0 15px; max-width:72ch}
+  ul,ol{max-width:72ch; margin:0 0 15px; padding-left:20px}
+  li{margin-bottom:7px}
+  li::marker{color:var(--faint)}
+  strong{font-weight:600}
+  a{color:var(--indigo)}
+  code{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.855em;
+    background:var(--sunk); padding:1.5px 5px; border-radius:3px; color:var(--ink);
+  }
+  .hi{font-family:"IBM Plex Sans Devanagari","IBM Plex Sans",sans-serif}
+  .te{font-family:"Noto Sans Telugu","IBM Plex Sans",sans-serif}
+
+  /* ---------- components ---------- */
+  .callout{
+    border-left:2px solid var(--madder); background:var(--madder-soft);
+    padding:16px 20px; margin:22px 0; border-radius:0 5px 5px 0; max-width:72ch;
+  }
+  .callout p{margin:0}
+  .callout p + p{margin-top:10px}
+  .callout .eyebrow{color:var(--madder); display:block; margin-bottom:7px}
+
+  .cards{display:grid; gap:14px; margin:22px 0 6px}
+  @media (min-width:720px){.cards.two{grid-template-columns:1fr 1fr}}
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:7px;
+    padding:20px 22px; box-shadow:var(--shadow);
+  }
+  .card h3{margin:8px 0 8px; font-size:1.02rem}
+  .card p:last-child{margin-bottom:0}
+  .card .tag{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; font-weight:500;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--indigo);
+  }
+
+  .adr{
+    border:1px solid var(--line); border-radius:7px; background:var(--surface);
+    padding:0; margin:16px 0; overflow:hidden;
+  }
+  .adr-head{
+    display:flex; gap:12px; align-items:baseline; padding:14px 20px 12px;
+    border-bottom:1px solid var(--line); background:var(--sunk);
+  }
+  .adr-head .id{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; font-weight:600;
+    letter-spacing:.08em; color:var(--indigo); flex:none;
+  }
+  .adr-head .t{font-weight:600; font-size:.97rem; line-height:1.35}
+  .adr-body{padding:15px 20px 17px}
+  .adr-body p{margin:0; font-size:.945rem; color:var(--muted)}
+  .adr-body p + p{margin-top:9px}
+  .adr-body b{color:var(--ink); font-weight:500}
+
+  figure{margin:30px 0; padding:0}
+  figure svg{display:block; width:100%; max-width:100%; height:auto}
+  .figframe{
+    background:var(--surface); border:1px solid var(--line); border-radius:7px;
+    padding:26px 22px 20px; overflow-x:auto; box-shadow:var(--shadow);
+  }
+  figcaption{
+    margin-top:13px; font-size:13px; line-height:1.5; color:var(--muted); max-width:76ch;
+  }
+  figcaption b{color:var(--ink); font-weight:500}
+
+  .tablewrap{overflow-x:auto; margin:22px 0; border:1px solid var(--line); border-radius:7px; background:var(--surface)}
+  table{border-collapse:collapse; width:100%; font-size:14.2px; min-width:520px}
+  th,td{text-align:left; padding:11px 16px; border-bottom:1px solid var(--line); vertical-align:top}
+  thead th{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; font-weight:500;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    background:var(--sunk); border-bottom:1px solid var(--line-strong); white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:none}
+  td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  td.who{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.5px; white-space:nowrap; color:var(--indigo)}
+
+  .phase{
+    display:grid; gap:0 22px; grid-template-columns:1fr;
+    border-top:1px solid var(--line); padding:24px 0 4px;
+  }
+  @media (min-width:760px){.phase{grid-template-columns:150px minmax(0,1fr)}}
+  .phase:first-of-type{border-top:1px solid var(--line-strong)}
+  .phase-key{padding-bottom:10px}
+  .phase-n{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:2.05rem; font-weight:500;
+    line-height:1; color:var(--indigo); letter-spacing:-.03em; font-variant-numeric:tabular-nums;
+  }
+  .phase-when{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; color:var(--muted);
+    margin-top:8px; letter-spacing:.03em;
+  }
+  .phase-body h3{margin-top:0}
+  .phase-body ul{margin-bottom:8px}
+
+  .ship{
+    background:var(--indigo-soft); border-radius:5px; padding:11px 15px; margin-top:12px;
+    font-size:13.5px; max-width:72ch;
+  }
+  .ship b{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--indigo); display:block; margin-bottom:4px; font-weight:500;
+  }
+
+  pre{
+    background:var(--surface); border:1px solid var(--line); border-radius:7px;
+    padding:18px 20px; overflow-x:auto; margin:20px 0;
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12.6px; line-height:1.62;
+    color:var(--ink);
+  }
+  pre .c{color:var(--faint)}
+
+  .sample{
+    border:1px solid var(--line); border-radius:7px; background:var(--surface);
+    margin:22px 0; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .sample-row{display:grid; grid-template-columns:1fr; border-top:1px solid var(--line)}
+  @media (min-width:640px){.sample-row{grid-template-columns:128px minmax(0,1fr)}}
+  .sample-row:first-child{border-top:none}
+  .sample-k{
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10.5px; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--muted); padding:14px 16px 4px;
+    background:var(--sunk); border-right:1px solid var(--line);
+  }
+  @media (min-width:640px){.sample-k{padding:15px 16px}}
+  .sample-v{padding:8px 18px 15px; font-size:14.6px; line-height:1.55}
+  @media (min-width:640px){.sample-v{padding:14px 20px}}
+  .sample-v .sub{color:var(--muted); font-size:12.8px; margin-top:5px}
+
+  .checks{list-style:none; padding:0; max-width:72ch}
+  .checks li{
+    padding-left:26px; position:relative; margin-bottom:10px; font-size:14.8px;
+  }
+  .checks li::before{
+    content:""; position:absolute; left:2px; top:.55em; width:9px; height:9px;
+    border:1.5px solid var(--indigo); border-radius:2px;
+  }
+
+  footer{
+    grid-column:1/-1; margin-top:80px; padding-top:26px; border-top:1px solid var(--line);
+    font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11.5px; color:var(--faint);
+    display:flex; flex-wrap:wrap; gap:8px 28px;
+  }
+  a:focus-visible,summary:focus-visible{outline:2px solid var(--indigo); outline-offset:3px; border-radius:2px}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important}}
+</style>
+
+<div class="shell">
+
+  <header class="masthead">
+    <div class="eyebrow">SIH 2026 &nbsp;·&nbsp; PS 26090 &nbsp;·&nbsp; MoSJE &nbsp;·&nbsp; Heritage &amp; Culture</div>
+    <h1>Karigar</h1>
+    <p class="lede">A voice-first Flutter application that turns a photograph and a spoken sentence into a sellable listing, then pushes it onto the marketplaces the Ministry has already built. <strong>We are not proposing a new platform. We are proposing the on-ramp that the existing one is missing.</strong></p>
+    <div class="meta">
+      <div><span>Client</span><b>Ministry of Social Justice &amp; Empowerment</b></div>
+      <div><span>Stack</span><b>Flutter · FastAPI · hybrid AI</b></div>
+      <div><span>Team</span><b>6 · Aditya leading</b></div>
+      <div><span>Finale</span><b>December 2026</b></div>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Contents">
+    <ol>
+      <li class="grp">Position</li>
+      <li><a href="#read">Reading the brief</a></li>
+      <li><a href="#bets">Four bets</a></li>
+      <li class="grp">Design</li>
+      <li><a href="#arch">System architecture</a></li>
+      <li><a href="#decisions">Decisions on record</a></li>
+      <li><a href="#pipeline">The listing pipeline</a></li>
+      <li><a href="#pricing">Pricing engine</a></li>
+      <li><a href="#data">Data model</a></li>
+      <li class="grp">Execution</li>
+      <li><a href="#repo">Repository</a></li>
+      <li><a href="#standards">Engineering standards</a></li>
+      <li><a href="#team">Who builds what</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#skeleton">Prototype scope</a></li>
+      <li class="grp">Exposure</li>
+      <li><a href="#risks">Risks</a></li>
+      <li><a href="#scoring">Against the rubric</a></li>
+      <li><a href="#next">Next actions</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section id="read">
+      <div class="eyebrow">Position</div>
+      <h2>Reading the brief</h2>
+      <p>The problem statement names three features — an image enhancer, a multilingual auto-cataloger, a pricing assistant. Every team that picks 26090 will build those three and demo them. Three observations decide whether we place.</p>
+
+      <h3>The title puts market linkage first</h3>
+      <p>"AI-Driven <em>Market Linkage</em> and Smart Cataloging." The stated impact goal is a <em>continuous, year-round digital sales channel, reducing dependency on periodic physical fairs</em>. A beautiful catalog that no buyer ever sees is a photo album. The three named features are the on-ramp; the road is ONDC and GeM. We build the on-ramp properly, then we actually connect it to demand — which is the half most teams will gesture at on a slide and never implement.</p>
+
+      <h3>The binding constraint is literacy, not AI</h3>
+      <p>Background removal is a solved problem you can run on a phone. What is <em>not</em> solved is a 45-year-old weaver with a ₹7,000 Android device, patchy 4G, and no reading fluency completing a product listing without help. That is an interaction-design problem, and it is where the 25% novelty weight is genuinely available — it is also the thing a judge can watch happen in thirty seconds.</p>
+
+      <h3>The Dataset Link is empty</h3>
+      <p>The problem statement supplies no data. Any team promising a trained market-price model is either hand-waving or has overfit scraped noise, and a probing judge will find the seam. We design a pricing system that is defensible without a dataset we do not have — and turn that honesty into the strongest line on the impact slide.</p>
+
+      <h3>And the fourth, which decides the pitch</h3>
+      <p>The Ministry has already built the marketplace. <b>Bharat TULIP</b>, launched by MoSJE through NBCFDC in November 2024, runs a dedicated Amazon.in storefront, Mystore.in listings, Heritage Collection Stores and an annual Seller–Buyer Meet, with products sorted into four curated collections — Virasat Living, Ratna Rekha, Resham Sutra and Leather Legacy.</p>
+      <p>It has served roughly <b>1,500 artisans</b>. The same ministry reports ₹17,225 crore disbursed to <b>54 lakh</b> beneficiaries. That ratio is the entire problem statement in one number.</p>
+      <p>Any team that walks in saying "artisans have no digital channel, so we will build one" is telling a MoSJE judge that they did not read the ministry's own press releases. The channel exists. What does not exist is a way onto it — because getting a listing onto an Amazon shelf requires a photographer, a copywriter and a pricing analyst, which is precisely the list of things the problem statement says these artisans lack.</p>
+
+      <div class="callout">
+        <span class="eyebrow">Thesis</span>
+        <p>Karigar is not a marketplace, and not a cataloging app with AI bolted on. It is the <b>on-ramp to the market the Ministry already built</b> — an entry barrier driven to zero: one photo, one spoken sentence, no typing, no reading, no signal required.</p>
+        <p>We are not asking MoSJE to adopt a new platform. We are telling them why TULIP has 1,500 artisans instead of 50,000, and handing them the fix.</p>
+      </div>
+    </section>
+
+    <section id="bets">
+      <h2>Four bets</h2>
+      <p>These are the claims we defend on stage. Everything in the build plan exists to make one of them true.</p>
+
+      <div class="cards two">
+        <div class="card">
+          <div class="tag">Bet 01 · Interaction</div>
+          <h3>Zero-literacy by construction</h3>
+          <p>No typing anywhere on the critical path. Products are identified by their own photograph, never by a typed name. Every screen speaks its prompt in the artisan's language and every confirmation is read back aloud. Price confirmation uses currency-note imagery, not digits alone.</p>
+          <p>The acceptance test is blunt: <b>a person who cannot read completes a full listing unaided.</b></p>
+        </div>
+        <div class="card">
+          <div class="tag">Bet 02 · Model design</div>
+          <h3>Craft-aware, not craft-blind</h3>
+          <p>A generic segmenter treats a Pattachitra scroll like a sneaker. We ship a GI-anchored craft taxonomy — Pochampally ikat, Madhubani, Bidriware, Channapatna, Kutch embroidery, Bhagalpuri silk — and an on-device classifier that identifies the craft first.</p>
+          <p>The craft class then conditions everything downstream: segmentation strategy, description vocabulary, SEO keywords, and which comparables the pricing engine is allowed to look at. Generic AI writes <em>"blue cloth."</em></p>
+        </div>
+        <div class="card">
+          <div class="tag">Bet 03 · Economics</div>
+          <h3>A wage floor, not a black box</h3>
+          <p>We do not output one confident number. We output a <b>floor</b> derived from materials plus hours at the state handloom fair-wage rate, and a <b>market band</b> from craft-matched comparables — and we show the artisan the gap between the two.</p>
+          <p>The app will not suggest a price below the floor. On a Social Justice problem statement, an app that refuses to let an artisan underprice their own labour is the impact slide.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Bet 04 · Distribution</div>
+          <h3>Feed the channel that already exists</h3>
+          <p>The catalog is authored once and exported everywhere. <b>Bharat TULIP first</b> — mapped to the ministry's own four collections, with images built to the Amazon listing specification TULIP's storefront actually enforces. Then ONDC seller network, GeM-ready bundles, and a B2B buyer portal with semantic search.</p>
+          <p>The loop closes when a bulk enquiry arrives back in the artisan's app as a <b>spoken alert in their own language</b> — not an English email they cannot read.</p>
+        </div>
+      </div>
+
+      <h4>Supporting: the craft passport</h4>
+      <p>Every listing carries a scannable provenance record — cluster, GI tag, loom type, and the artisan's existing government identity rather than one we invent. The Pehchan artisan ID card and the NBCFDC beneficiary record already exist; we reference them and let the ministry's own registry be the source of truth. Verified authenticity is what commands a price premium for genuine handloom, and it costs us one table and a QR encoder.</p>
+    </section>
+
+    <section id="arch">
+      <div class="eyebrow">Design</div>
+      <h2>System architecture</h2>
+      <p>Three bands: what runs on a phone that may have no signal, what runs on our servers, and where the demand lives. The edge worth staring at is the one coming back from right to left.</p>
+
+      <figure>
+        <div class="figframe">
+          <svg viewBox="0 0 920 560" role="img" aria-label="Three-band architecture: the Flutter device band syncs a queued, idempotent write log to a FastAPI platform band, which enqueues jobs to workers that call pluggable AI provider adapters and persist to Postgres, Redis and object storage; the platform publishes catalog to Bharat TULIP, ONDC, GeM and a B2B buyer portal, and buyer enquiries return to the device as a spoken alert in the artisan's language.">
+            <defs>
+              <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"/>
+              </marker>
+              <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--madder)"/>
+              </marker>
+            </defs>
+
+            <g font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.3" fill="var(--faint)">
+              <text x="20" y="24">DEVICE — OFFLINE CAPABLE</text>
+              <text x="330" y="24">PLATFORM</text>
+              <text x="686" y="24">DEMAND</text>
+            </g>
+
+            <!-- band separators -->
+            <line x1="310" y1="36" x2="310" y2="470" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 5"/>
+            <line x1="666" y1="36" x2="666" y2="470" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 5"/>
+
+            <!-- DEVICE -->
+            <g stroke="currentColor" stroke-width="1.2" fill="var(--surface)">
+              <rect x="20" y="44" width="264" height="40" rx="5"/>
+              <rect x="20" y="94" width="264" height="40" rx="5"/>
+              <rect x="20" y="144" width="264" height="40" rx="5"/>
+            </g>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor">
+              <text x="36" y="69">Capture &amp; Studio</text>
+              <text x="36" y="119">Voice Cataloger</text>
+              <text x="36" y="169">Catalog · Orders · Enquiries</text>
+            </g>
+
+            <rect x="20" y="204" width="264" height="106" rx="5" fill="var(--indigo-soft)" stroke="var(--indigo)" stroke-width="1.2"/>
+            <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--indigo)" letter-spacing="1.2">
+              <text x="36" y="226">ON DEVICE</text>
+            </g>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="currentColor">
+              <text x="36" y="248">Segmenter (U²-Net-lite, TFLite)</text>
+              <text x="36" y="267">Craft classifier (MobileNetV3)</text>
+              <text x="36" y="286">Drift SQLite · outbox sync queue</text>
+              <text x="36" y="305">Offline TTS prompts</text>
+            </g>
+
+            <!-- device -> platform -->
+            <line x1="288" y1="120" x2="356" y2="120" stroke="currentColor" stroke-width="1.4" marker-end="url(#ah)"/>
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--muted)" text-anchor="middle">
+              <text x="322" y="107">idempotent</text>
+              <text x="322" y="141">writes</text>
+            </g>
+
+            <!-- PLATFORM -->
+            <rect x="356" y="44" width="270" height="52" rx="5" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"/>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor">
+              <text x="372" y="68">FastAPI gateway</text>
+            </g>
+            <text x="372" y="85" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--muted)">auth · catalog · sync reconcile · exports</text>
+
+            <line x1="491" y1="96" x2="491" y2="132" stroke="currentColor" stroke-width="1.4" marker-end="url(#ah)"/>
+            <text x="500" y="118" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--muted)">enqueue</text>
+
+            <rect x="356" y="132" width="270" height="52" rx="5" fill="var(--surface)" stroke="currentColor" stroke-width="1.2"/>
+            <text x="372" y="156" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor">Async workers (ARQ)</text>
+            <text x="372" y="173" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--muted)">relight · ASR · generation · embeddings</text>
+
+            <line x1="491" y1="184" x2="491" y2="220" stroke="currentColor" stroke-width="1.4" marker-end="url(#ah)"/>
+            <text x="500" y="206" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--muted)">adapter iface</text>
+
+            <rect x="356" y="220" width="270" height="90" rx="5" fill="var(--surface)" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <text x="372" y="243" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor">AI providers — pluggable</text>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--muted)">
+              <text x="372" y="262">Bhashini ASR / MT / TTS · 22 languages</text>
+              <text x="372" y="279">LLM description writer</text>
+              <text x="372" y="296">Whisper + IndicTrans2 fallback · Mock</text>
+            </g>
+
+            <!-- data tier -->
+            <line x1="356" y1="340" x2="626" y2="340" stroke="var(--line-strong)" stroke-width="1"/>
+            <g stroke="currentColor" stroke-width="1.2" fill="var(--surface)">
+              <rect x="356" y="356" width="128" height="38" rx="5"/>
+              <rect x="498" y="356" width="128" height="38" rx="5"/>
+              <rect x="356" y="404" width="270" height="38" rx="5"/>
+            </g>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="currentColor">
+              <text x="370" y="380">Postgres + pgvector</text>
+              <text x="512" y="380">Redis</text>
+              <text x="370" y="428">Object store (S3-compatible)</text>
+            </g>
+
+            <!-- DEMAND -->
+            <rect x="686" y="44" width="214" height="46" rx="5" fill="var(--indigo-soft)" stroke="var(--indigo)" stroke-width="1.4"/>
+            <g stroke="currentColor" stroke-width="1.2" fill="var(--surface)">
+              <rect x="686" y="102" width="214" height="46" rx="5"/>
+              <rect x="686" y="160" width="214" height="46" rx="5"/>
+              <rect x="686" y="218" width="214" height="46" rx="5"/>
+            </g>
+            <text x="702" y="66" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="var(--indigo)">Bharat TULIP · MoSJE</text>
+            <text x="702" y="81" font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="var(--indigo)">Amazon.in · Mystore · 4 collections</text>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="currentColor">
+              <text x="702" y="124">ONDC seller node</text>
+              <text x="702" y="182">GeM catalog export</text>
+              <text x="702" y="240">B2B buyer portal</text>
+            </g>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="var(--muted)">
+              <text x="702" y="139">beckn protocol schema</text>
+              <text x="702" y="197">bid-ready CSV bundle</text>
+              <text x="702" y="255">pgvector semantic search</text>
+            </g>
+
+            <line x1="630" y1="70" x2="682" y2="70" stroke="currentColor" stroke-width="1.4" marker-end="url(#ah)"/>
+            <text x="656" y="60" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--muted)" text-anchor="middle">publish</text>
+
+            <!-- the loop back: madder -->
+            <path d="M 793 268 L 793 486 L 152 486 L 152 316" fill="none" stroke="var(--madder)" stroke-width="1.8" marker-end="url(#ahm)"/>
+            <rect x="300" y="470" width="292" height="32" rx="4" fill="var(--madder-soft)" stroke="var(--madder)" stroke-width="1"/>
+            <text x="446" y="490" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="var(--madder)" text-anchor="middle">enquiry → spoken alert in artisan's language</text>
+
+            <text x="20" y="536" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" letter-spacing="1.1">THE RETURN EDGE IS THE PRODUCT. WITHOUT IT THIS IS A CATALOG APP.</text>
+          </svg>
+        </div>
+        <figcaption><b>Why the return edge matters.</b> Delete the red path and every remaining box still functions — you have built a very good cataloging tool that changes nobody's income. The enquiry reaching the artisan as audio, in their language, is what converts a catalog into a sales channel, and it is the only part of the diagram that the problem statement's impact goals actually measure. Note also that the demand band is mostly <b>not ours to build</b>: TULIP, ONDC and GeM already exist and already have buyers. We write adapters, not marketplaces.</figcaption>
+      </figure>
+    </section>
+
+    <section id="decisions">
+      <h2>Decisions on record</h2>
+      <p>Six architectural decisions, each with the reason we will be asked for. These go into <code>docs/adr/</code> as the first commits so nobody relitigates them in week four.</p>
+
+      <div class="adr">
+        <div class="adr-head"><span class="id">ADR-01</span><span class="t">Offline-first, with the device as UI source of truth</span></div>
+        <div class="adr-body">
+          <p>The local Drift database backs every screen; writes go to an outbox with an idempotency key and reconcile server-side on reconnect. <b>Because</b> craft clusters have intermittent 4G, and an artisan who photographs twenty products in a courtyard with no bars must not lose twenty products. Cost: real conflict-resolution work in Phase 2. Accepted.</p>
+        </div>
+      </div>
+
+      <div class="adr">
+        <div class="adr-head"><span class="id">ADR-02</span><span class="t">Every AI capability sits behind a provider adapter</span></div>
+        <div class="adr-body">
+          <p>One interface per capability — <code>SpeechTranscriber</code>, <code>Translator</code>, <code>DescriptionWriter</code>, <code>ImageEnhancer</code>, <code>PriceEstimator</code>. Implementations: Bhashini, self-hosted, and <b>Mock</b>.</p>
+          <p><b>Because</b> it buys three things at once: no vendor lock-in for a government deployment, a credible sovereign-stack answer when a judge asks about recurring cost, and a fully offline demo mode. The mock provider is not a testing convenience — it is our insurance against the venue wifi.</p>
+        </div>
+      </div>
+
+      <div class="adr">
+        <div class="adr-head"><span class="id">ADR-03</span><span class="t">Split the image pipeline across the boundary</span></div>
+        <div class="adr-body">
+          <p>Segmentation, crop and white-balance run on-device and return in under a second. Super-resolution and relighting queue for the server. <b>Because</b> the artisan must see a clean cut-out immediately — that instant feedback is what makes the app feel like magic — while the expensive pass can land minutes later without anyone waiting on it.</p>
+        </div>
+      </div>
+
+      <div class="adr">
+        <div class="adr-head"><span class="id">ADR-04</span><span class="t">Bhashini as primary Indic language provider</span></div>
+        <div class="adr-body">
+          <p>ASR, translation and TTS route through Bhashini (the Digital India Bhashini Division's ULCA APIs) with self-hosted Whisper and IndicTrans2 behind the same adapter. <b>Because</b> it is the Government of India's own national language stack, covers the 22 scheduled languages, and on a ministry problem statement "we built on Bhashini" is a materially better answer than "we call a US API."</p>
+        </div>
+      </div>
+
+      <div class="adr">
+        <div class="adr-head"><span class="id">ADR-05</span><span class="t">Contract-first: OpenAPI generates the Dart client</span></div>
+        <div class="adr-body">
+          <p>FastAPI emits the schema; CI regenerates the typed Dart client and fails the build on drift. <b>Because</b> with six people and two tiers, the default failure mode is the app team blocked on the backend team. Generated clients plus mock servers mean neither side ever waits.</p>
+        </div>
+      </div>
+
+      <div class="adr">
+        <div class="adr-head"><span class="id">ADR-06</span><span class="t">One language per tier — Python everywhere on the server</span></div>
+        <div class="adr-body">
+          <p>No Node service alongside the Python ML code. <b>Because</b> six students under deadline can hold one server mental model, one dependency manager and one test runner. The ML people and the API people share tooling instead of negotiating a boundary. Cost: we give up Node's ecosystem for the buyer portal's backend. Accepted.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pipeline">
+      <h2>The listing pipeline</h2>
+      <p>Two inputs — one photograph, one spoken sentence — converge into a listing. The interesting design work is which steps sit on which side of the network boundary, because that choice is what makes the app usable in a village and cheap to run at scale.</p>
+
+      <figure>
+        <div class="figframe">
+          <svg viewBox="0 0 920 400" role="img" aria-label="The listing pipeline: a photo path runs a pre-shot quality gate, on-device segmentation, auto-crop and on-device craft classification, while a voice path runs on-device silence trimming then cloud speech recognition and structured attribute extraction; both converge into craft-conditioned generation producing English and Hindi listings plus a price band, which is read back to the artisan on-device for spoken approval.">
+            <defs>
+              <marker id="ph" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <!-- legend -->
+            <g font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1.1" fill="var(--muted)">
+              <rect x="620" y="14" width="16" height="12" rx="3" fill="var(--indigo-soft)" stroke="var(--indigo)" stroke-width="1.2"/>
+              <text x="644" y="24" fill="var(--indigo)">ON DEVICE</text>
+              <rect x="744" y="14" width="16" height="12" rx="3" fill="var(--surface)" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 2.5"/>
+              <text x="768" y="24">CLOUD</text>
+            </g>
+
+            <!-- photo lane -->
+            <text x="20" y="62" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.3" fill="var(--faint)">PHOTO</text>
+            <g stroke="var(--indigo)" stroke-width="1.2" fill="var(--indigo-soft)">
+              <rect x="20" y="74" width="122" height="44" rx="5"/>
+              <rect x="162" y="74" width="122" height="44" rx="5"/>
+              <rect x="304" y="74" width="122" height="44" rx="5"/>
+              <rect x="446" y="74" width="122" height="44" rx="5"/>
+            </g>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="currentColor" text-anchor="middle">
+              <text x="81" y="93">Quality gate</text><text x="81" y="108" font-size="10" fill="var(--muted)">before the shutter</text>
+              <text x="223" y="93">Segment</text><text x="223" y="108" font-size="10" fill="var(--muted)">U²-Net-lite</text>
+              <text x="365" y="93">Crop · balance</text><text x="365" y="108" font-size="10" fill="var(--muted)">to Amazon spec</text>
+              <text x="507" y="93">Classify craft</text><text x="507" y="108" font-size="10" fill="var(--muted)">GI taxonomy</text>
+            </g>
+            <g stroke="currentColor" stroke-width="1.3" marker-end="url(#ph)">
+              <line x1="146" y1="96" x2="158" y2="96"/>
+              <line x1="288" y1="96" x2="300" y2="96"/>
+              <line x1="430" y1="96" x2="442" y2="96"/>
+            </g>
+
+            <!-- voice lane -->
+            <text x="20" y="182" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.3" fill="var(--faint)">VOICE</text>
+            <rect x="20" y="194" width="122" height="44" rx="5" fill="var(--indigo-soft)" stroke="var(--indigo)" stroke-width="1.2"/>
+            <rect x="162" y="194" width="122" height="44" rx="5" fill="var(--indigo-soft)" stroke="var(--indigo)" stroke-width="1.2"/>
+            <rect x="304" y="194" width="122" height="44" rx="5" fill="var(--surface)" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <rect x="446" y="194" width="122" height="44" rx="5" fill="var(--surface)" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="currentColor" text-anchor="middle">
+              <text x="81" y="213">Record</text><text x="81" y="228" font-size="10" fill="var(--muted)">any of 22 langs</text>
+              <text x="223" y="213">Trim silence</text><text x="223" y="228" font-size="10" fill="var(--muted)">VAD</text>
+              <text x="365" y="213">Transcribe</text><text x="365" y="228" font-size="10" fill="var(--muted)">Bhashini ASR</text>
+              <text x="507" y="213">Extract fields</text><text x="507" y="228" font-size="10" fill="var(--muted)">typed schema</text>
+            </g>
+            <g stroke="currentColor" stroke-width="1.3" marker-end="url(#ph)">
+              <line x1="146" y1="216" x2="158" y2="216"/>
+              <line x1="288" y1="216" x2="300" y2="216"/>
+              <line x1="430" y1="216" x2="442" y2="216"/>
+            </g>
+
+            <!-- converge -->
+            <path d="M 572 96 L 616 96 L 616 156" fill="none" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M 572 216 L 616 216 L 616 156" fill="none" stroke="currentColor" stroke-width="1.3"/>
+            <line x1="616" y1="156" x2="646" y2="156" stroke="currentColor" stroke-width="1.3" marker-end="url(#ph)"/>
+
+            <rect x="650" y="122" width="140" height="68" rx="5" fill="var(--surface)" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="currentColor" text-anchor="middle">
+              <text x="720" y="146">Craft-conditioned</text>
+              <text x="720" y="161">generation</text>
+              <text x="720" y="178" font-size="10" fill="var(--muted)">EN + HI · price band</text>
+            </g>
+
+            <!-- readback -->
+            <path d="M 720 194 L 720 296 L 288 296" fill="none" stroke="var(--indigo)" stroke-width="1.5" marker-end="url(#ph)" color="var(--indigo)"/>
+            <rect x="20" y="274" width="264" height="44" rx="5" fill="var(--indigo-soft)" stroke="var(--indigo)" stroke-width="1.2"/>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="currentColor" text-anchor="middle">
+              <text x="152" y="293">Read back aloud for approval</text>
+              <text x="152" y="308" font-size="10" fill="var(--muted)">TTS in the artisan's own language</text>
+            </g>
+            <text x="440" y="288" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--indigo)" text-anchor="middle">artisan stays the author</text>
+
+            <text x="20" y="368" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="var(--muted)">Everything blue survives an offline courtyard. Everything dashed queues until there is signal — and nothing dashed blocks the artisan.</text>
+          </svg>
+        </div>
+        <figcaption><b>The approval step is not a nicety.</b> An artisan who cannot read has no way to check what was written about their own product. Speaking the generated description back to them in their language — and letting them re-record if it is wrong — is what keeps a human as the author rather than the subject, and it is the single feature most likely to be remembered after the demo.</figcaption>
+      </figure>
+
+      <h3>What the extraction step actually produces</h3>
+      <p>The transcript is never handed to the description model as free text. It is parsed into a typed schema first — material, technique, dimensions, colours, hours to make, quantity available — so that missing fields become spoken follow-up questions rather than model hallucinations.</p>
+
+      <div class="sample">
+        <div class="sample-row">
+          <div class="sample-k">Voice in</div>
+          <div class="sample-v"><span class="te">ఇది చేతితో నేసిన పోచంపల్లి ఇకత్ చీర.</span><div class="sub">Telugu, 4 seconds, recorded with no network</div></div>
+        </div>
+        <div class="sample-row">
+          <div class="sample-k">Extracted</div>
+          <div class="sample-v"><code>craft: pochampally_ikat</code> · <code>type: saree</code> · <code>technique: handloom, double ikat</code><div class="sub">Unfilled: fibre, length, dye, hours → asked aloud, one question at a time</div></div>
+        </div>
+        <div class="sample-row">
+          <div class="sample-k">English</div>
+          <div class="sample-v">Handwoven Pochampally double-ikat cotton saree, natural indigo dye, 5.5 m with blouse piece — Bhoodan Pochampally cluster, Telangana. GI-tagged handloom.</div>
+        </div>
+        <div class="sample-row">
+          <div class="sample-k">Hindi</div>
+          <div class="sample-v"><span class="hi">हाथ से बुनी पोचमपल्ली डबल इकत सूती साड़ी, प्राकृतिक नील रंगाई, 5.5 मीटर, ब्लाउज पीस सहित — भूदान पोचमपल्ली क्लस्टर, तेलंगाना। जीआई टैग हथकरघा।</span></div>
+        </div>
+        <div class="sample-row">
+          <div class="sample-k">Read back</div>
+          <div class="sample-v">Spoken in Telugu, then: <em>"Is this right? Press green to publish, red to say it again."</em></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <h2>The pricing engine</h2>
+      <p>The problem statement asks for a price "based on current market trends and raw material costs" and supplies no dataset. Here is how we honour the ask without inventing a model we cannot defend.</p>
+
+      <figure>
+        <div class="figframe">
+          <svg viewBox="0 0 920 232" role="img" aria-label="A price scale showing the artisan's current typical asking price falling below a computed cost floor of materials plus hours at fair wage, with the craft-matched market band sitting well above both; the app blocks any price below the floor and surfaces the gap.">
+            <defs>
+              <marker id="pa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 9 5 L 0 9 z" fill="var(--madder)"/>
+              </marker>
+            </defs>
+
+            <!-- axis -->
+            <line x1="60" y1="140" x2="880" y2="140" stroke="var(--line-strong)" stroke-width="1.5"/>
+            <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--faint)" font-variant-numeric="tabular-nums">
+              <text x="60" y="162">₹0</text>
+              <text x="856" y="162">₹6,000</text>
+            </g>
+
+            <!-- forbidden zone -->
+            <rect x="60" y="112" width="300" height="28" fill="var(--madder-soft)"/>
+            <text x="210" y="130" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--madder)" text-anchor="middle">app will not list here</text>
+
+            <!-- market band -->
+            <rect x="470" y="112" width="270" height="28" fill="var(--indigo-soft)" stroke="var(--indigo)" stroke-width="1"/>
+            <text x="605" y="130" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="var(--indigo)" text-anchor="middle">craft-matched market band</text>
+
+            <!-- current price marker -->
+            <line x1="212" y1="76" x2="212" y2="112" stroke="var(--madder)" stroke-width="1.5"/>
+            <circle cx="212" cy="112" r="3.5" fill="var(--madder)"/>
+            <text x="212" y="66" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="var(--madder)" text-anchor="middle">what she charges today</text>
+            <text x="212" y="50" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--madder)" text-anchor="middle" font-variant-numeric="tabular-nums">₹1,100</text>
+
+            <!-- floor marker -->
+            <line x1="360" y1="92" x2="360" y2="168" stroke="currentColor" stroke-width="2"/>
+            <text x="360" y="84" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="currentColor" text-anchor="middle">cost floor</text>
+            <text x="360" y="184" font-family="IBM Plex Sans, sans-serif" font-size="10" fill="var(--muted)" text-anchor="middle">materials + hours × fair wage</text>
+            <text x="360" y="198" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" text-anchor="middle" font-variant-numeric="tabular-nums">₹1,850</text>
+
+            <!-- suggested -->
+            <line x1="560" y1="92" x2="560" y2="168" stroke="var(--indigo)" stroke-width="2"/>
+            <text x="560" y="84" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="var(--indigo)" text-anchor="middle">suggested</text>
+            <text x="560" y="198" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--indigo)" text-anchor="middle" font-variant-numeric="tabular-nums">₹2,700</text>
+
+            <!-- gap arrow -->
+            <path d="M 218 216 L 554 216" fill="none" stroke="var(--madder)" stroke-width="1.4" marker-end="url(#pa)"/>
+            <rect x="300" y="204" width="176" height="24" rx="4" fill="var(--ground)"/>
+            <text x="388" y="221" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="var(--madder)" text-anchor="middle">the gap we are here to close</text>
+          </svg>
+        </div>
+        <figcaption><b>Two numbers, not one.</b> The floor is arithmetic we can show our working for — material cost and hours, both collected by voice, priced against the state handloom fair-wage rate. The band is comparables restricted to the same craft class. We never claim a trained market model; we claim a defensible floor, an honest band, and a refusal to publish below cost.</figcaption>
+      </figure>
+
+      <h4>Inputs</h4>
+      <ul>
+        <li><b>From the image</b> — craft class, and a finish-quality score (weave regularity, edge finish, colour saturation) that positions the item within its band.</li>
+        <li><b>From the voice intake</b> — three spoken questions: what materials, roughly how many days, how many do you have. Nothing typed.</li>
+        <li><b>From the comparables index</b> — a craft-partitioned price index we seed from public marketplace listings, exhibition price lists and GeM catalog data, refreshed on a schedule and versioned so a suggestion can always be traced to the snapshot that produced it.</li>
+      </ul>
+
+      <h4>Output</h4>
+      <p>A floor, a suggested price, a stretch price, and a plain-language spoken rationale: <em>"Your materials and eleven days of work come to ₹1,850. Sarees like yours sell between ₹2,400 and ₹3,200. I suggest ₹2,700."</em> Every number the artisan hears can be explained back to them, which is the whole point.</p>
+    </section>
+
+    <section id="data">
+      <h2>Data model</h2>
+      <p>Postgres with pgvector. Eleven tables carry the prototype; nothing here is speculative.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Table</th><th>Carries</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>artisans</code></td><td>identity, language, cluster, scheme linkage</td><td>Phone-OTP identity; no email anywhere</td></tr>
+            <tr><td><code>clusters</code></td><td>craft cluster, district, state</td><td>Seeded from GI and cluster development data</td></tr>
+            <tr><td><code>crafts</code></td><td>taxonomy node, GI status, vocabulary, price partition, TULIP collection</td><td>The spine — everything conditions on this. Top level is the ministry's own four collections, not ours</td></tr>
+            <tr><td><code>products</code></td><td>listing core, craft ref, status, ONDC id</td><td>Soft-deleted, never hard-deleted</td></tr>
+            <tr><td><code>product_media</code></td><td>original, processed, alpha matte, variants</td><td>Original is immutable; processing is redoable</td></tr>
+            <tr><td><code>product_attributes</code></td><td>typed extraction output</td><td>Key/value with provenance: voice, image or manual</td></tr>
+            <tr><td><code>descriptions</code></td><td>locale, text, SEO keywords, model version</td><td>One row per locale; source locale flagged</td></tr>
+            <tr><td><code>price_quotes</code></td><td>floor, suggested, stretch, index snapshot ref</td><td>Immutable — we can always reproduce a suggestion</td></tr>
+            <tr><td><code>embeddings</code></td><td>pgvector column keyed to product</td><td>Powers buyer semantic search and comparables</td></tr>
+            <tr><td><code>enquiries</code>, <code>orders</code></td><td>buyer demand and fulfilment</td><td>Enquiry triggers the spoken alert</td></tr>
+            <tr><td><code>sync_ops</code></td><td>device outbox reconciliation log</td><td>Idempotency key + device clock + server clock</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="repo">
+      <div class="eyebrow">Execution</div>
+      <h2>Repository</h2>
+      <p>One monorepo. Six people, one clone, one <code>docker compose up</code>.</p>
+      <pre><span class="c">karigar/</span>
+├── apps/
+│   ├── mobile/            <span class="c"># Flutter — feature-first clean architecture</span>
+│   │   └── lib/
+│   │       ├── core/          <span class="c"># theme, router, di, result types, l10n</span>
+│   │       ├── features/
+│   │       │   ├── capture/   <span class="c"># data / domain / presentation per feature</span>
+│   │       │   ├── cataloger/
+│   │       │   ├── pricing/
+│   │       │   ├── catalog/
+│   │       │   └── enquiries/
+│   │       └── ml/            <span class="c"># tflite interpreters, isolate workers</span>
+│   ├── backend/           <span class="c"># FastAPI</span>
+│   │   └── app/
+│   │       ├── api/v1/        <span class="c"># routers — thin, no logic</span>
+│   │       ├── domain/        <span class="c"># entities + use cases, framework-free</span>
+│   │       ├── providers/     <span class="c"># AI adapters: bhashini | local | mock</span>
+│   │       ├── workers/       <span class="c"># ARQ tasks</span>
+│   │       ├── exporters/     <span class="c"># tulip.py, ondc.py, gem.py</span>
+│   │       └── db/            <span class="c"># models, alembic migrations, seeds</span>
+│   └── buyer_portal/      <span class="c"># server-rendered, deliberately small</span>
+├── packages/
+│   ├── ml/                <span class="c"># training + TFLite export, pinned + reproducible</span>
+│   └── api_client_dart/   <span class="c"># GENERATED from OpenAPI — never hand-edited</span>
+├── infra/                 <span class="c"># compose, Caddy, seed data, fixtures</span>
+├── docs/
+│   ├── adr/               <span class="c"># the six decisions above, then everything after</span>
+│   ├── demo/              <span class="c"># demo script + pre-seeded account</span>
+│   └── design/            <span class="c"># the zero-literacy design system</span>
+└── .github/workflows/     <span class="c"># lint · test · client-drift check</span></pre>
+    </section>
+
+    <section id="standards">
+      <h2>Engineering standards</h2>
+      <p>Six people writing code for four months under exam pressure. Standards are not ceremony here — they are the only thing that keeps the last fortnight from being a merge crisis.</p>
+
+      <div class="cards two">
+        <div class="card">
+          <div class="tag">Flutter</div>
+          <p><code>very_good_analysis</code> lints, zero warnings on main. Riverpod v2 with codegen for state, <code>freezed</code> for models, Drift for persistence, <code>go_router</code> for navigation, <code>mocktail</code> for tests. Golden tests on the six core screens — they catch the layout regressions that a low-end device will otherwise find for us on stage.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Python</div>
+          <p><code>uv</code> for dependencies, <code>ruff</code> for lint and format, <code>mypy</code> in strict mode, <code>pytest</code> with a real Postgres in CI via testcontainers. Alembic for every schema change — no manual DDL, ever. Domain layer imports nothing from FastAPI.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Git</div>
+          <p>Trunk-based. Branches live under 48 hours. Conventional commits. Every PR needs one review and green CI; <code>main</code> is always demoable, because at some point someone will ask to see it with no notice.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Definition of done</div>
+          <p>Merged, tested, lint-clean, works offline where the feature claims to, has a Hindi string in the ARB file, and has been run once on the ₹7,000 reference device. Not "works on my emulator."</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="eyebrow">Buy the reference device in week one</span>
+        <p>A 2 GB-RAM Android phone, bought early and kept on the desk. Every performance claim we make gets checked against it. Teams that only ever test on a flagship discover their ML pipeline is unusable in December, when there is no time left to fix it.</p>
+      </div>
+    </section>
+
+    <section id="team">
+      <h2>Who builds what</h2>
+      <p>Boundaries drawn so that six people can work the same week without touching each other's files. The two Flutter roles are split by feature, not by layer, precisely so they never edit the same widget.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Role</th><th>Owns</th><th>Primary surface</th></tr></thead>
+          <tbody>
+            <tr><td class="who">Lead — Aditya</td><td>Architecture, API contracts, integration, ADRs, demo script, deck</td><td>Everything at the seams</td></tr>
+            <tr><td class="who">Flutter · A</td><td>Camera, quality gate, studio, on-device image pipeline, TFLite isolates</td><td><code>features/capture</code>, <code>ml/</code></td></tr>
+            <tr><td class="who">Flutter · B</td><td>Voice cataloger, catalog, enquiries, i18n, accessibility, TTS readback</td><td><code>features/cataloger</code>, <code>catalog</code>, <code>enquiries</code></td></tr>
+            <tr><td class="who">Backend</td><td>FastAPI, schema, auth, sync reconcile, job queue, TULIP + ONDC + GeM exporters</td><td><code>apps/backend</code></td></tr>
+            <tr><td class="who">ML</td><td>Craft classifier, segmentation tuning, extraction + generation prompts, pricing engine, Bhashini adapter</td><td><code>packages/ml</code>, <code>providers/</code></td></tr>
+            <tr><td class="who">Design + data</td><td>Zero-literacy design system, craft taxonomy, comparables index, buyer portal, video</td><td><code>docs/design</code>, seeds, <code>buyer_portal</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:14px;color:var(--muted)">Compliance note: SIH requires exactly six members from one institution with at least one female member, plus one or two mentors. Confirm the roster meets this before the internal round — teams have been disqualified on it.</p>
+    </section>
+
+    <section id="roadmap">
+      <h2>Roadmap</h2>
+      <p>Internal hackathons run through September, online evaluation across October and November, the Grand Finale in December. Working backwards from that, the walking skeleton has to exist before the internal round — which means it has about two weeks.</p>
+
+      <div class="phase">
+        <div class="phase-key"><div class="phase-n">00</div><div class="phase-when">27 Aug – 2 Sep</div></div>
+        <div class="phase-body">
+          <h3>Foundations</h3>
+          <ul>
+            <li>Monorepo, CI, lint gates, <code>docker compose up</code> green for all six people</li>
+            <li>Six ADRs committed; OpenAPI skeleton and generated Dart client wired</li>
+            <li>Zero-literacy design system: icon set, colour semantics, touch targets, type scale</li>
+            <li>Craft taxonomy v1 — twelve crafts, seeded with cluster and GI data, mapped to TULIP's four collections</li>
+            <li>Mock provider implementations for every AI interface</li>
+          </ul>
+          <div class="ship"><b>Ship</b>Anyone can clone, run, and see a fake listing render end to end. Nothing intelligent yet — but the rails are down.</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-key"><div class="phase-n">01</div><div class="phase-when">3 Sep – 14 Sep</div></div>
+        <div class="phase-body">
+          <h3>Walking skeleton — the internal-round demo</h3>
+          <ul>
+            <li>Camera → on-device segmentation → crop and balance → clean product image</li>
+            <li>Voice note → Bhashini ASR → attribute extraction → EN + HI description</li>
+            <li>Cost floor + hardcoded comparables band for one craft</li>
+            <li>TTS readback and spoken approval</li>
+            <li>Listing renders in the buyer portal</li>
+          </ul>
+          <div class="ship"><b>Ship</b>One craft, Hindi and English, online only. A stranger can watch a listing be created from nothing in under ninety seconds. <b style="display:inline;text-transform:none;letter-spacing:0;font-size:13.5px;color:var(--ink)">Scope freezes here — everything after this date is additive.</b></div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-key"><div class="phase-n">02</div><div class="phase-when">15 Sep – 10 Oct</div></div>
+        <div class="phase-body">
+          <h3>Depth</h3>
+          <ul>
+            <li>Offline outbox and sync reconciliation — the courtyard scenario works</li>
+            <li>Craft classifier trained and exported to TFLite; twelve crafts live</li>
+            <li>Five languages end to end; ARB files complete</li>
+            <li>Real comparables index, versioned snapshots, finish-quality scoring</li>
+            <li>Phone-OTP auth, artisan profile, craft passport QR</li>
+          </ul>
+          <div class="ship"><b>Ship</b>The app survives having its network switched off mid-demo. Deliberately rehearse this.</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-key"><div class="phase-n">03</div><div class="phase-when">11 Oct – 15 Nov</div></div>
+        <div class="phase-body">
+          <h3>Market linkage</h3>
+          <ul>
+            <li><b>Bharat TULIP export</b> — listings mapped to the four collections, images validated against the Amazon listing specification</li>
+            <li>ONDC-schema catalog and seller-node integration against the sandbox</li>
+            <li>GeM-ready catalog export bundle</li>
+            <li>Buyer portal with pgvector semantic search and bulk enquiry</li>
+            <li>Enquiry → spoken alert → quote → order, closed loop</li>
+            <li>Self-hosted Whisper and IndicTrans2 fallback path proven</li>
+          </ul>
+          <div class="ship"><b>Ship</b>The demand-side story is demonstrable, not aspirational. This is what separates us from the field.</div>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-key"><div class="phase-n">04</div><div class="phase-when">16 Nov – Finale</div></div>
+        <div class="phase-body">
+          <h3>Hardening and stagecraft</h3>
+          <ul>
+            <li>Performance pass on the reference device — cold start, inference latency, APK size budget</li>
+            <li>Accessibility audit against the zero-literacy acceptance test with a real non-reading user</li>
+            <li>Full mock-provider demo mode; pre-seeded account; offline demo rehearsed to failure</li>
+            <li>Deck, video, and the 36-hour finale plan the PPT template requires</li>
+          </ul>
+          <div class="ship"><b>Ship</b>A build that cannot be broken by the venue wifi, and a team that has rehearsed the demo enough to do it while being interrupted.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skeleton">
+      <h2>Prototype scope — what Phase 1 must do</h2>
+      <p>Written as acceptance criteria so there is no argument on 14 September about whether we are done.</p>
+      <ul class="checks">
+        <li>An artisan opens the app and reaches the camera in one tap, with a spoken prompt in Hindi.</li>
+        <li>The quality gate refuses a blurred or backlit frame <em>before</em> the shutter fires, and says why aloud.</li>
+        <li>Segmentation returns a clean cut-out on a white ground in under 1.5 seconds on the reference device.</li>
+        <li>A voice note in Hindi becomes a structured attribute set, with missing fields asked back as spoken questions.</li>
+        <li>English and Hindi descriptions generate with craft-appropriate vocabulary, not generic adjectives.</li>
+        <li>A price floor, suggestion and stretch appear with a spoken rationale the artisan can follow.</li>
+        <li>The artisan hears the description read back and approves or re-records — no typing occurs anywhere.</li>
+        <li>The listing appears in the buyer portal within five seconds of approval.</li>
+        <li>The whole flow runs against mock providers with the network disabled.</li>
+      </ul>
+      <p>Explicitly <b>out</b> of Phase 1: offline sync, the trained classifier, languages beyond Hindi, real comparables, auth, ONDC, orders. Every one of those is Phase 2 or later, and pulling any of them forward is how the skeleton fails to ship.</p>
+    </section>
+
+    <section id="risks">
+      <div class="eyebrow">Exposure</div>
+      <h2>Risks</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Risk</th><th>Mitigation</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td>Bhashini rate limits, latency or downtime</td><td>Adapter pattern from day one; self-hosted Whisper + IndicTrans2 proven in Phase 3; cached demo assets</td><td class="who">ML</td></tr>
+            <tr><td>No pricing dataset exists</td><td>Cost-floor design; comparables index versioned and citable; we never claim a trained market model</td><td class="who">ML</td></tr>
+            <tr><td>ML assets too heavy for low-end phones</td><td>INT8 quantisation; hard budget of 25 MB for bundled models; benchmark on the reference device in Phase 1, not Phase 4</td><td class="who">Flutter A</td></tr>
+            <tr><td>Venue network fails during the demo</td><td>Full mock-provider mode plus a pre-seeded account; the offline demo is rehearsed, not improvised</td><td class="who">Lead</td></tr>
+            <tr><td>Scope creep across six people</td><td>Skeleton frozen 14 Sep; everything after is additive and behind a flag</td><td class="who">Lead</td></tr>
+            <tr><td>ONDC integration deeper than a student team can go</td><td>Build to the schema and the sandbox; claim sandbox integration, never live production network</td><td class="who">Backend</td></tr>
+            <tr><td>No public TULIP ingestion API — export may be manual today</td><td>Emit a validated bundle matching their collections and Amazon image spec; position as "ready to ingest" and ask the SPOC to route the integration question to NBCFDC</td><td class="who">Lead</td></tr>
+            <tr><td>Judge asks "how does she get paid, and who ships it?"</td><td>Out of build scope by design — TULIP, ONDC and GeM each carry their own settlement and logistics. Have the answer rehearsed; do not improvise it on stage</td><td class="who">Lead</td></tr>
+            <tr><td>Frontend blocked on backend</td><td>Contract-first with generated clients and mock servers; CI fails on client drift</td><td class="who">Lead</td></tr>
+            <tr><td>Voice extraction quality in dialects</td><td>Structured extraction with spoken follow-ups instead of one-shot parsing; degrade to guided questions, never to gibberish</td><td class="who">ML</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="scoring">
+      <h2>Against the rubric</h2>
+      <p>SIH scores across five weighted criteria, and evaluators spend two to three minutes per submission. Each bet is aimed at a specific line.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Criterion</th><th class="num">Weight</th><th>What we lead with</th></tr></thead>
+          <tbody>
+            <tr><td>Innovation and uniqueness</td><td class="num">25%</td><td>Zero-literacy interaction model and craft-conditioned AI — both demonstrable in seconds, neither a feature list</td></tr>
+            <tr><td>Problem understanding</td><td class="num">20%</td><td>1,500 TULIP artisans against 54 lakh beneficiaries — we name the ministry's own gap, in the ministry's own numbers, and we do not pitch a platform they already have</td></tr>
+            <tr><td>Technical feasibility</td><td class="num">20%</td><td>A working skeleton by mid-September, ADRs with stated costs, and a 36-hour finale plan grounded in shipped code</td></tr>
+            <tr><td>Impact and scalability</td><td class="num">20%</td><td>The fair-wage floor — the operational version of a promise TULIP already makes rhetorically — plus a scaling path that needs no new marketplace built</td></tr>
+            <tr><td>Presentation quality</td><td class="num">15%</td><td>One live ninety-second listing creation. No slide beats watching it happen.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="eyebrow">The thing to rehearse</span>
+        <p>Two to three minutes of evaluator attention means the demo <b>is</b> the pitch. Ninety seconds of a listing being created from nothing — photo, voice, price, published — with the phone screen mirrored, and thirty seconds on the return edge. Everything else in this document exists to make those two minutes true.</p>
+      </div>
+    </section>
+
+    <section id="next">
+      <h2>Next actions</h2>
+      <ol>
+        <li><b>Confirm the roster</b> — six from one institution, at least one female member, mentors named. Blocks the internal-round entry.</li>
+        <li><b>Buy the reference device.</b> Everything we claim about performance is unverifiable until it is on the desk.</li>
+        <li><b>Register for Bhashini API access.</b> Government onboarding takes time; start it before we need it.</li>
+        <li><b>Study Bharat TULIP properly.</b> Buy nothing, but read the NBCFDC e-commerce and marketplace-integration material, browse the Amazon storefront, and note exactly what a listing there looks like. Our export target is a real page we can point at, not an abstraction. Ask the SPOC whether NBCFDC can be approached for the ingestion path.</li>
+        <li><b>Approve or amend this plan</b> — particularly the four bets, because the roadmap collapses out of them.</li>
+        <li><b>Scaffold the monorepo</b> with CI, lint gates, ADRs and mock providers, so Phase 1 starts on rails.</li>
+      </ol>
+      <p style="font-size:14px;color:var(--muted)">Sources for the landscape claims above: <a href="https://nbcfdc.gov.in/nbcfdc/tulip/bharat-tulip.html">NBCFDC — Bharat TULIP</a>, <a href="https://theprint.in/india/social-justice-ministry-launches-digital-platform-to-empower-artisans-from-marginalised-sections/2342719/">ThePrint on the launch</a>, <a href="https://krishijagran.com/news/shilp-samagam-mela-2023-union-minister-announces-rs-17-225-crore-support-for-54-lakh-beneficiaries/">the ₹17,225 cr / 54 lakh figure</a>, <a href="https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=1945169">PIB on the Pehchan artisan ID</a>, <a href="https://bhashini.gitbook.io/bhashini-apis">Bhashini API documentation</a>. Verify each yourself before it goes in the deck — a judge may know these better than we do.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Karigar</span>
+    <span>SIH 2026 · PS 26090</span>
+    <span>Architecture &amp; delivery plan · v1</span>
+    <span>27 August 2026</span>
+  </footer>
+</div>

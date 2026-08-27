@@ -1,0 +1,146 @@
+[
+  {
+    "id": "pochampally_ikat", "name": "Pochampally Ikat",
+    "collection": "resham_sutra", "state": "Telangana",
+    "cluster": "Bhoodan Pochampally, Yadadri Bhuvanagiri", "gi_tagged": true,
+    "unit": "saree", "materials": ["cotton", "silk", "natural dye"],
+    "vocabulary": ["ikat", "double ikat", "resist dyeing", "warp", "weft", "telia rumal", "handloom", "chevron", "GI-tagged"],
+    "typical_hours": 88, "material_cost_hint": 900
+  },
+  {
+    "id": "banarasi_brocade", "name": "Banarasi Brocade",
+    "collection": "resham_sutra", "state": "Uttar Pradesh",
+    "cluster": "Varanasi", "gi_tagged": true,
+    "unit": "saree", "materials": ["silk", "zari", "gold thread"],
+    "vocabulary": ["brocade", "zari", "kadhwa", "jangla", "butidar", "meenakari weave", "pallu", "handloom"],
+    "typical_hours": 160, "material_cost_hint": 4500
+  },
+  {
+    "id": "bhagalpuri_tussar", "name": "Bhagalpur Tussar Silk",
+    "collection": "resham_sutra", "state": "Bihar",
+    "cluster": "Bhagalpur", "gi_tagged": true,
+    "unit": "saree", "materials": ["tussar silk", "natural dye"],
+    "vocabulary": ["tussar", "kosa silk", "slub texture", "handloom", "gicha", "ghicha yarn"],
+    "typical_hours": 64, "material_cost_hint": 2200
+  },
+  {
+    "id": "chanderi", "name": "Chanderi",
+    "collection": "resham_sutra", "state": "Madhya Pradesh",
+    "cluster": "Chanderi, Ashoknagar", "gi_tagged": true,
+    "unit": "saree", "materials": ["silk", "cotton", "zari"],
+    "vocabulary": ["sheer texture", "nakshi border", "buti", "silk-cotton", "handloom", "transparency"],
+    "typical_hours": 72, "material_cost_hint": 1800
+  },
+  {
+    "id": "kutch_embroidery", "name": "Kutch Embroidery",
+    "collection": "resham_sutra", "state": "Gujarat",
+    "cluster": "Bhuj, Kutch", "gi_tagged": true,
+    "unit": "piece", "materials": ["cotton", "silk thread", "mirror"],
+    "vocabulary": ["abhla", "mirror work", "suf", "khaarek", "rabari", "ahir", "chain stitch", "hand-embroidered"],
+    "typical_hours": 40, "material_cost_hint": 600
+  },
+  {
+    "id": "kantha_stitch", "name": "Kantha Stitch",
+    "collection": "resham_sutra", "state": "West Bengal",
+    "cluster": "Bolpur, Birbhum", "gi_tagged": false,
+    "unit": "saree", "materials": ["cotton", "silk", "cotton thread"],
+    "vocabulary": ["running stitch", "nakshi kantha", "hand-quilted", "motif", "reversible"],
+    "typical_hours": 120, "material_cost_hint": 1400
+  },
+  {
+    "id": "madhubani_painting", "name": "Madhubani Painting",
+    "collection": "virasat_living", "state": "Bihar",
+    "cluster": "Madhubani, Mithila", "gi_tagged": true,
+    "unit": "painting", "materials": ["handmade paper", "natural pigment", "canvas"],
+    "vocabulary": ["Mithila", "bharni", "kachni", "godna", "tantrik", "natural pigment", "double-line border"],
+    "typical_hours": 30, "material_cost_hint": 350
+  },
+  {
+    "id": "pattachitra", "name": "Odisha Pattachitra",
+    "collection": "virasat_living", "state": "Odisha",
+    "cluster": "Raghurajpur, Puri", "gi_tagged": true,
+    "unit": "scroll", "materials": ["treated cloth", "tamarind glue", "natural pigment"],
+    "vocabulary": ["patta", "chitrakar", "Jagannath", "tussar patta", "natural pigment", "fine line work", "border motif"],
+    "typical_hours": 56, "material_cost_hint": 500
+  },
+  {
+    "id": "channapatna_toys", "name": "Channapatna Toys",
+    "collection": "virasat_living", "state": "Karnataka",
+    "cluster": "Channapatna, Ramanagara", "gi_tagged": true,
+    "unit": "piece", "materials": ["ivory wood", "hale wood", "lac", "vegetable dye"],
+    "vocabulary": ["lacquerware", "aale mara", "turned wood", "vegetable dye", "child-safe", "lathe-turned"],
+    "typical_hours": 6, "material_cost_hint": 120
+  },
+  {
+    "id": "bidriware", "name": "Bidriware",
+    "collection": "virasat_living", "state": "Karnataka",
+    "cluster": "Bidar", "gi_tagged": true,
+    "unit": "piece", "materials": ["zinc alloy", "copper", "pure silver"],
+    "vocabulary": ["damascening", "tarkashi", "taiwan silver inlay", "oxidised", "zinc-copper alloy", "jet black patina"],
+    "typical_hours": 44, "material_cost_hint": 1600
+  },
+  {
+    "id": "blue_pottery", "name": "Jaipur Blue Pottery",
+    "collection": "virasat_living", "state": "Rajasthan",
+    "cluster": "Jaipur", "gi_tagged": true,
+    "unit": "piece", "materials": ["quartz", "fuller's earth", "borax", "cobalt oxide"],
+    "vocabulary": ["frit ware", "cobalt blue", "quartz body", "low-fire glaze", "hand-painted", "Persian motif"],
+    "typical_hours": 12, "material_cost_hint": 220
+  },
+  {
+    "id": "bastar_dhokra", "name": "Bastar Dhokra",
+    "collection": "virasat_living", "state": "Chhattisgarh",
+    "cluster": "Kondagaon, Bastar", "gi_tagged": true,
+    "unit": "figure", "materials": ["brass", "beeswax", "clay"],
+    "vocabulary": ["lost-wax casting", "cire perdue", "brass", "tribal motif", "wax thread", "non-ferrous"],
+    "typical_hours": 36, "material_cost_hint": 800
+  },
+  {
+    "id": "warli_painting", "name": "Warli Painting",
+    "collection": "virasat_living", "state": "Maharashtra",
+    "cluster": "Dahanu, Palghar", "gi_tagged": true,
+    "unit": "painting", "materials": ["cloth", "cow dung base", "rice paste"],
+    "vocabulary": ["tarpa dance", "rice paste", "geometric", "monochrome", "tribal", "ritual motif"],
+    "typical_hours": 20, "material_cost_hint": 260
+  },
+  {
+    "id": "thewa_art", "name": "Thewa Art",
+    "collection": "ratna_rekha", "state": "Rajasthan",
+    "cluster": "Pratapgarh", "gi_tagged": true,
+    "unit": "piece", "materials": ["24k gold sheet", "coloured glass", "silver"],
+    "vocabulary": ["thewa", "gold on glass", "fusing", "openwork", "Pratapgarh", "24-carat"],
+    "typical_hours": 50, "material_cost_hint": 3200
+  },
+  {
+    "id": "temple_jewellery", "name": "Nagercoil Temple Jewellery",
+    "collection": "ratna_rekha", "state": "Tamil Nadu",
+    "cluster": "Nagercoil, Kanyakumari", "gi_tagged": true,
+    "unit": "piece", "materials": ["silver", "gold plating", "stone"],
+    "vocabulary": ["temple jewellery", "kemp stone", "repousse", "gold-plated silver", "Bharatanatyam", "deity motif"],
+    "typical_hours": 34, "material_cost_hint": 2800
+  },
+  {
+    "id": "silver_filigree", "name": "Cuttack Silver Filigree",
+    "collection": "ratna_rekha", "state": "Odisha",
+    "cluster": "Cuttack", "gi_tagged": true,
+    "unit": "piece", "materials": ["silver wire", "silver sheet"],
+    "vocabulary": ["tarakasi", "filigree", "drawn wire", "soldered lattice", "92.5 silver", "openwork"],
+    "typical_hours": 42, "material_cost_hint": 2400
+  },
+  {
+    "id": "kolhapuri_chappal", "name": "Kolhapuri Chappal",
+    "collection": "leather_legacy", "state": "Maharashtra",
+    "cluster": "Kolhapur", "gi_tagged": true,
+    "unit": "pair", "materials": ["vegetable-tanned leather", "cotton thread"],
+    "vocabulary": ["vegetable-tanned", "hand-stitched", "kapashi", "braided", "toe loop", "no-nail construction"],
+    "typical_hours": 10, "material_cost_hint": 450
+  },
+  {
+    "id": "shantiniketan_leather", "name": "Shantiniketan Leather",
+    "collection": "leather_legacy", "state": "West Bengal",
+    "cluster": "Bolpur, Birbhum", "gi_tagged": true,
+    "unit": "piece", "materials": ["vegetable-tanned leather", "natural dye"],
+    "vocabulary": ["batik on leather", "vegetable-tanned", "embossed", "hand-tooled", "Santiniketan motif"],
+    "typical_hours": 14, "material_cost_hint": 520
+  }
+]

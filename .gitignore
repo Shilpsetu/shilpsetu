@@ -1,0 +1,45 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.local
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+
+# --- Flutter / Dart ---
+.dart_tool/
+.packages
+build/
+*.iml
+.flutter-plugins
+.flutter-plugins-dependencies
+apps/mobile/ios/Pods/
+apps/mobile/android/.gradle/
+apps/mobile/android/local.properties
+*.g.dart
+*.freezed.dart
+
+# --- Node ---
+node_modules/
+dist/
+
+# --- ML ---
+packages/ml/data/
+packages/ml/runs/
+*.ckpt
+*.onnx
+*.h5
+
+# --- Editors / OS ---
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+
+# --- Local infra state ---
+infra/.volumes/

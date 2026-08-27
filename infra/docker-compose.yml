@@ -1,0 +1,40 @@
+name: karigar
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: karigar
+      POSTGRES_PASSWORD: karigar
+      POSTGRES_DB: karigar
+    ports: ["5432:5432"]
+    volumes: [".volumes/pg:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U karigar"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  # S3-compatible object store for product media. Console on :9001.
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: karigar
+      MINIO_ROOT_PASSWORD: karigar-dev-secret
+    ports: ["9000:9000", "9001:9001"]
+    volumes: [".volumes/minio:/data"]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 3s
+      retries: 12

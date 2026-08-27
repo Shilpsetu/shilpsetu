@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.tflite binary
+*.g.dart linguist-generated=true
+*.freezed.dart linguist-generated=true
+packages/api_client_dart/** linguist-generated=true
