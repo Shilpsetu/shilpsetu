@@ -128,19 +128,21 @@ async def quote(payload: schemas.PriceIn) -> schemas.PriceOut:
         finish_score=payload.finish_score,
     )
 
-    band_low = max(estimate.band_low, breakdown.floor)
-    band_high = max(estimate.band_high, band_low)
-    suggested = pricing.position_in_band(
-        band_low=band_low, band_high=band_high, finish_score=payload.finish_score
+    quote_result = pricing.build_quote(
+        breakdown=breakdown,
+        band_low=estimate.band_low,
+        band_high=estimate.band_high,
+        finish_score=payload.finish_score,
     )
 
     return schemas.PriceOut(
         floor=breakdown.floor,
-        suggested=suggested,
-        stretch=band_high,
-        band_low=band_low,
-        band_high=band_high,
-        rationale=pricing.speak_rationale(breakdown, suggested, band_low, band_high),
+        suggested=quote_result.suggested,
+        stretch=quote_result.stretch,
+        band_low=quote_result.band_low,
+        band_high=quote_result.band_high,
+        position=quote_result.position.value,
+        rationale=quote_result.rationale,
         material_cost=breakdown.material_cost,
         labour_cost=breakdown.labour_cost,
         overhead=breakdown.overhead,

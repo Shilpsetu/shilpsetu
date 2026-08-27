@@ -67,6 +67,9 @@ def test_quote_never_suggests_below_floor(client: TestClient) -> None:
     body = r.json()
     assert float(body["suggested"]) >= float(body["floor"])
     assert body["rationale"]
+    assert body["position"] in {"within_band", "floor_above_market"}
+    # A collapsed band produces "sells between X and X", which is nonsense aloud.
+    assert float(body["band_low"]) < float(body["band_high"])
 
 
 def test_quote_unknown_craft_is_404(client: TestClient) -> None:

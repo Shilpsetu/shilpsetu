@@ -68,6 +68,13 @@ class PriceOut(BaseModel):
     stretch: Decimal
     band_low: Decimal
     band_high: Decimal
+    position: str = Field(
+        description=(
+            "'within_band' or 'floor_above_market'. When floor_above_market, the "
+            "app must show the below-market state explicitly (Palette.belowFloor "
+            "plus icon plus speech) -- never just the number."
+        )
+    )
     rationale: str = Field(description="Plain language, for text-to-speech. Read this aloud.")
     material_cost: Decimal
     labour_cost: Decimal
