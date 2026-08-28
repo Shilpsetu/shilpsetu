@@ -67,18 +67,17 @@ class CaptureRepositoryImpl implements CaptureRepository {
     );
 
     // 3. Store draft record in Drift database
-    if (_database != null) {
-      await saveLocalDraft(capturedCraft);
-    }
+    await saveLocalDraft(capturedCraft);
 
     return capturedCraft;
   }
 
   @override
   Future<void> saveLocalDraft(CapturedCraft craft) async {
-    if (_database == null) return;
+    final db = _database;
+    if (db == null) return;
 
-    await _database.insertProduct(
+    await db.insertProduct(
       LocalProductsCompanion(
         id: Value(craft.id),
         localImagePath: Value(craft.localProcessedPath),
