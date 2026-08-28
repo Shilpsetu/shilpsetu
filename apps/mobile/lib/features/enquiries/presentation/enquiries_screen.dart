@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -34,13 +35,13 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
     try {
       await _tts.setLanguage('hi-IN');
       await _tts.setSpeechRate(0.45);
-      await _tts.setPitch(1.0);
+      await _tts.setPitch(1);
     } catch (_) {}
   }
 
   Future<void> _speakEnquiry(EnquiryItem enquiry) async {
-    final controller = ref.read(enquiriesControllerProvider.notifier);
-    controller.setActivePlaying(enquiry.id);
+    final controller = ref.read(enquiriesControllerProvider.notifier)
+      ..setActivePlaying(enquiry.id);
 
     final speech =
         'खरीदार ${enquiry.buyerName} ने पूछा है: ${enquiry.messageText}. कीमत: ${enquiry.offeredPrice ?? ""}.';
@@ -53,7 +54,7 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
 
   @override
   void dispose() {
-    _tts.stop();
+    unawaited(_tts.stop());
     super.dispose();
   }
 
@@ -80,7 +81,11 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.mark_chat_unread_rounded, color: Colors.white, size: 20),
+                  const Icon(
+                    Icons.mark_chat_unread_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     '${state.unreadCount} New',
@@ -105,11 +110,13 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                 vertical: Sizes.gapSmall,
               ),
               child: ZeroLiteracyPromptCard(
-                promptText: 'खरीदारों के नए संदेश और ऑर्डर\nIncoming buyer messages & orders',
+                promptText:
+                    'खरीदारों के नए संदेश और ऑर्डर\nIncoming buyer messages & orders',
                 icon: Icons.mark_chat_unread_rounded,
-                accentColor: Palette.primary,
                 onReplayAudio: () {
-                  _tts.speak('यहाँ खरीदारों के नए संदेश और ऑर्डर दिखाई देंगे');
+                  unawaited(
+                    _tts.speak('यहाँ खरीदारों के नए संदेश और ऑर्डर दिखाई देंगे'),
+                  );
                 },
               ),
             ),
@@ -144,15 +151,18 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                       : ListView.separated(
                           padding: const EdgeInsets.all(Sizes.gutter),
                           itemCount: state.enquiries.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: Sizes.gapMedium),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: Sizes.gapMedium),
                           itemBuilder: (context, index) {
                             final enquiry = state.enquiries[index];
-                            final isPlaying = state.activePlayingId == enquiry.id;
+                            final isPlaying =
+                                state.activePlayingId == enquiry.id;
 
                             return Card(
                               elevation: enquiry.isUnread ? 3 : 1,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(Sizes.cardRadius),
+                                borderRadius:
+                                    BorderRadius.circular(Sizes.cardRadius),
                                 side: BorderSide(
                                   color: enquiry.isUnread
                                       ? Palette.primary
@@ -171,7 +181,8 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                         CircleAvatar(
                                           radius: 24,
                                           backgroundColor: enquiry.isUnread
-                                              ? Palette.primaryLight.withValues(alpha: 0.15)
+                                              ? Palette.primaryLight
+                                                  .withValues(alpha: 0.15)
                                               : Palette.surfaceContainerHigh,
                                           child: Icon(
                                             Icons.person_rounded,
@@ -184,7 +195,8 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                         const SizedBox(width: 12),
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 enquiry.buyerName,
@@ -206,7 +218,8 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                             ],
                                           ),
                                         ),
-                                        if (enquiry.status == EnquiryStatus.accepted)
+                                        if (enquiry.status ==
+                                            EnquiryStatus.accepted)
                                           const TripleChannelStatusBadge(
                                             label: 'Accepted',
                                             icon: Icons.check_circle_rounded,
@@ -229,7 +242,8 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         color: Palette.surfaceContainer,
-                                        borderRadius: BorderRadius.circular(Sizes.radius),
+                                        borderRadius:
+                                            BorderRadius.circular(Sizes.radius),
                                       ),
                                       child: Text(
                                         enquiry.messageText,
@@ -261,7 +275,9 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                               foregroundColor: Colors.white,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(Sizes.radius),
+                                                    BorderRadius.circular(
+                                                  Sizes.radius,
+                                                ),
                                               ),
                                             ),
                                             icon: Icon(
@@ -271,17 +287,21 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                               size: 28,
                                             ),
                                             label: Text(
-                                              isPlaying ? 'Playing...' : 'संदेश सुनें (Listen)',
+                                              isPlaying
+                                                  ? 'Playing...'
+                                                  : 'संदेश सुनें (Listen)',
                                               style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w700,
                                               ),
                                             ),
-                                            onPressed: () => _speakEnquiry(enquiry),
+                                            onPressed: () =>
+                                                _speakEnquiry(enquiry),
                                           ),
                                         ),
 
-                                        if (enquiry.status != EnquiryStatus.accepted) ...[
+                                        if (enquiry.status !=
+                                            EnquiryStatus.accepted) ...[
                                           const SizedBox(width: 12),
                                           // 64dp Accept Button
                                           ElevatedButton.icon(
@@ -294,7 +314,9 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                               foregroundColor: Colors.white,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(Sizes.radius),
+                                                    BorderRadius.circular(
+                                                  Sizes.radius,
+                                                ),
                                               ),
                                             ),
                                             icon: const Icon(
@@ -311,16 +333,24 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                             ),
                                             onPressed: () {
                                               ref
-                                                  .read(enquiriesControllerProvider.notifier)
+                                                  .read(
+                                                    enquiriesControllerProvider
+                                                        .notifier,
+                                                  )
                                                   .accept(enquiry.id);
-                                              ScaffoldMessenger.of(context).showSnackBar(
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
                                                 const SnackBar(
-                                                  backgroundColor: Palette.affirm,
+                                                  backgroundColor:
+                                                      Palette.affirm,
                                                   content: Text(
                                                     'Order accepted! सूचना खरीदार को भेज दी गई है',
                                                     style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight: FontWeight.w600),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
                                                   ),
                                                 ),
                                               );

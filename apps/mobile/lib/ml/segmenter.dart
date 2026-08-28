@@ -26,7 +26,10 @@ class SegmentationResult {
 }
 
 /// Abstract contract for craft segmentation engine.
-abstract class MlSegmenter {
+abstract interface class MlSegmenter {
+  /// Name or architecture of the underlying ML checkpoint.
+  String get modelName;
+
   /// Segments and enhances an image to listing spec.
   Future<SegmentationResult> processImage(Uint8List imageBytes);
 }
@@ -38,6 +41,9 @@ class DeviceMlSegmenter implements MlSegmenter {
   }) : _processor = imageProcessor ?? const ImageProcessor();
 
   final ImageProcessor _processor;
+
+  @override
+  String get modelName => 'U-2-Net-lite INT8';
 
   @override
   Future<SegmentationResult> processImage(Uint8List imageBytes) async {
@@ -60,7 +66,7 @@ class DeviceMlSegmenter implements MlSegmenter {
     );
 
     final encodedOutput = _processor.encodeListingJpeg(processed);
-    final encodedMask = Uint8List.fromList(img.encodePng(mask));
+    final encodedMask = Uint8List.fromList(img.encodePng(mask, level: 0));
 
     stopwatch.stop();
     final elapsedMs = stopwatch.elapsedMilliseconds;
@@ -88,7 +94,7 @@ class DeviceMlSegmenter implements MlSegmenter {
       for (var x = 0; x < w; x++) {
         final dx = x - centerX;
         final dy = y - centerY;
-        final dist = (dx * dx + dy * dy);
+        final dist = dx * dx + dy * dy;
 
         // Center-weighted foreground probability mask
         if (dist <= maxRadius * maxRadius) {

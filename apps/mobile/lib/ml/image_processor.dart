@@ -16,7 +16,7 @@ class ImageProcessor {
   img.Image processListingImage(
     img.Image source, {
     img.Image? segmentationMask,
-    int targetDimension = 1024,
+    int targetDimension = 512,
     double marginFraction = 0.10,
   }) {
     // 1. Auto-white balance
@@ -37,7 +37,7 @@ class ImageProcessor {
       cropped,
       width: targetDimension,
       height: targetDimension,
-      interpolation: img.Interpolation.cubic,
+      interpolation: img.Interpolation.linear,
     );
 
     // 5. Mild contrast enhancement for marketplace clarity

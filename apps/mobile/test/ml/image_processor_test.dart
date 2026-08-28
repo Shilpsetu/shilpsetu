@@ -34,11 +34,11 @@ void main() {
 
       final output = processor.processListingImage(
         input,
-        targetDimension: 512,
+        targetDimension: 256,
       );
 
-      expect(output.width, equals(512));
-      expect(output.height, equals(512));
+      expect(output.width, equals(256));
+      expect(output.height, equals(256));
     });
 
     test('segmenter processes image and meets budget (< 1500ms)', () async {

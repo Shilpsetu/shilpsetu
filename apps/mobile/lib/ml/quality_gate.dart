@@ -10,9 +10,9 @@ import 'package:shilpsetu/ml/models/quality_assessment.dart';
 /// is more expensive than not taking one.
 class QualityGate {
   const QualityGate({
-    this.blurThreshold = 45.0,
-    this.minBrightness = 40.0,
-    this.maxBrightness = 230.0,
+    this.blurThreshold = 45,
+    this.minBrightness = 40,
+    this.maxBrightness = 230,
     this.backlightRatioThreshold = 2.4,
   });
 
@@ -48,7 +48,11 @@ class QualityGate {
   QualityAssessment evaluateImage(img.Image image) {
     // Downscale to ~160x120 for real-time evaluation (< 10ms).
     final downscaled = (image.width > 240 || image.height > 240)
-        ? img.copyResize(image, width: 160, height: (160 * image.height / image.width).round())
+        ? img.copyResize(
+            image,
+            width: 160,
+            height: (160 * image.height / image.width).round(),
+          )
         : image;
 
     final grayscale = img.grayscale(downscaled);
@@ -73,7 +77,10 @@ class QualityGate {
         final lum = pixel.r.toDouble(); // In grayscale, r == g == b
         totalLuminance += lum;
 
-        if (x >= centerXMin && x <= centerXMax && y >= centerYMin && y <= centerYMax) {
+        if (x >= centerXMin &&
+            x <= centerXMax &&
+            y >= centerYMin &&
+            y <= centerYMax) {
           centerLuminance += lum;
           centerCount++;
         } else {
@@ -89,7 +96,7 @@ class QualityGate {
     final avgBorder = borderCount > 0 ? borderLuminance / borderCount : 0.0;
 
     // Backlight ratio: background is much brighter than subject in center
-    final backlightRatio = avgCenter > 5.0 ? avgBorder / avgCenter : 1.0;
+    final backlightRatio = avgCenter > 5 ? avgBorder / avgCenter : 1.0;
 
     // 2. Blur detection via Laplacian edge variance
     final blurVariance = _calculateLaplacianVariance(grayscale);
@@ -107,7 +114,9 @@ class QualityGate {
     }
 
     // B. Backlighting
-    if (backlightRatio > backlightRatioThreshold && avgBorder > 160.0 && avgCenter < 100.0) {
+    if (backlightRatio > backlightRatioThreshold &&
+        avgBorder > 160 &&
+        avgCenter < 100) {
       return QualityAssessment.fail(
         issue: QualityIssue.backlight,
         blurScore: blurVariance,
@@ -140,7 +149,7 @@ class QualityGate {
   double _calculateLaplacianVariance(img.Image gray) {
     final w = gray.width;
     final h = gray.height;
-    if (w < 3 || h < 3) return 100.0;
+    if (w < 3 || h < 3) return 100;
 
     var sum = 0.0;
     var sumSq = 0.0;
@@ -165,9 +174,9 @@ class QualityGate {
       }
     }
 
-    if (count == 0) return 0.0;
+    if (count == 0) return 0;
     final mean = sum / count;
     final variance = (sumSq / count) - (mean * mean);
-    return math.max(0.0, variance);
+    return math.max(0, variance);
   }
 }

@@ -37,13 +37,14 @@ class CaptureState {
     CapturedCraft? capturedCraft,
     String? errorMessage,
     bool? isFlashOn,
+    bool clearError = false,
   }) {
     return CaptureState(
       isCameraReady: isCameraReady ?? this.isCameraReady,
       isProcessing: isProcessing ?? this.isProcessing,
       quality: quality ?? this.quality,
       capturedCraft: capturedCraft ?? this.capturedCraft,
-      errorMessage: errorMessage,
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       isFlashOn: isFlashOn ?? this.isFlashOn,
     );
   }
@@ -63,7 +64,7 @@ class CaptureController extends StateNotifier<CaptureState> {
 
   final CaptureRepository _repository;
 
-  void setCameraReady(bool isReady) {
+  void setCameraReady({required bool isReady}) {
     state = state.copyWith(isCameraReady: isReady);
   }
 
@@ -95,7 +96,7 @@ class CaptureController extends StateNotifier<CaptureState> {
       return null;
     }
 
-    state = state.copyWith(isProcessing: true, errorMessage: null);
+    state = state.copyWith(isProcessing: true, clearError: true);
 
     try {
       final craft = await _repository.processAndSaveCapture(
@@ -120,7 +121,7 @@ class CaptureController extends StateNotifier<CaptureState> {
   }
 
   void clearError() {
-    state = state.copyWith(errorMessage: null);
+    state = state.copyWith(clearError: true);
   }
 
   void reset() {

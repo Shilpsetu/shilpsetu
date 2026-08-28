@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:drift/drift.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -18,7 +17,7 @@ class CaptureRepositoryImpl implements CaptureRepository {
     QualityGate? qualityGate,
     MlSegmenter? segmenter,
   })  : _database = database,
-        _isolateRunner = isolateRunner ?? MlIsolateRunner(qualityGate: qualityGate, segmenter: segmenter),
+        _isolateRunner = isolateRunner ?? const MlIsolateRunner(),
         _qualityGate = qualityGate ?? const QualityGate(),
         _segmenter = segmenter ?? DeviceMlSegmenter();
 
@@ -92,8 +91,8 @@ class CaptureRepositoryImpl implements CaptureRepository {
     try {
       final appDir = await getApplicationDocumentsDirectory();
       final craftsDir = Directory(p.join(appDir.path, 'crafts'));
-      if (!await craftsDir.exists()) {
-        await craftsDir.create(parents: true);
+      if (!craftsDir.existsSync()) {
+        craftsDir.createSync(recursive: true);
       }
       return craftsDir;
     } catch (_) {

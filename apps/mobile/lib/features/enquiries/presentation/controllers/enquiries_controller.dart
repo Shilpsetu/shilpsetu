@@ -29,11 +29,12 @@ class EnquiriesState {
     bool? isLoading,
     String? errorMessage,
     String? activePlayingId,
+    bool clearError = false,
   }) {
     return EnquiriesState(
       enquiries: enquiries ?? this.enquiries,
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage,
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       activePlayingId: activePlayingId ?? this.activePlayingId,
     );
   }
@@ -54,7 +55,7 @@ class EnquiriesController extends StateNotifier<EnquiriesState> {
   final EnquiriesRepository _repository;
 
   Future<void> loadEnquiries() async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
       final list = await _repository.fetchEnquiries();
       state = state.copyWith(enquiries: list, isLoading: false);

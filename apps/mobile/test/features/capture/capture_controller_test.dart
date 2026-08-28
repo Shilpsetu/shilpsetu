@@ -12,13 +12,13 @@ class MockCaptureRepository implements CaptureRepository {
   @override
   Future<QualityAssessment> evaluateFrame(Uint8List frameBytes) async {
     if (shouldPassQuality) {
-      return QualityAssessment.pass(blurScore: 120.0, brightnessScore: 120.0);
+      return QualityAssessment.pass(blurScore: 120, brightnessScore: 120);
     }
     return QualityAssessment.fail(
       issue: QualityIssue.blur,
-      blurScore: 10.0,
-      brightnessScore: 120.0,
-      backlightScore: 1.0,
+      blurScore: 10,
+      brightnessScore: 120,
+      backlightScore: 1,
       guidanceMessage: 'The photo is blurry. Please hold steady.',
     );
   }

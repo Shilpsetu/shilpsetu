@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,7 +40,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
     try {
       await _tts.setLanguage('hi-IN');
       await _tts.setSpeechRate(0.45);
-      await _tts.setPitch(1.0);
+      await _tts.setPitch(1);
     } catch (_) {
       // Fallback if TTS engine isn't configured in test/emulator
     }
@@ -56,7 +57,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
     if (!quality.isAcceptable && quality.guidanceMessage != null) {
       if (_lastSpokenWarning != quality.guidanceMessage) {
         _lastSpokenWarning = quality.guidanceMessage;
-        _speakPrompt(quality.guidanceMessage!);
+        unawaited(_speakPrompt(quality.guidanceMessage!));
       }
     } else {
       _lastSpokenWarning = null;
@@ -70,8 +71,20 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
     // Create demo craft sample image (high contrast pattern)
     final demoImage = img.Image(width: 480, height: 480);
     img.fill(demoImage, color: img.ColorRgb8(240, 235, 220));
-    img.fillCircle(demoImage, x: 240, y: 240, radius: 140, color: img.ColorRgb8(181, 77, 43)); // Terracotta craft
-    img.drawCircle(demoImage, x: 240, y: 240, radius: 100, color: img.ColorRgb8(30, 47, 93)); // Indigo motif
+    img.fillCircle(
+      demoImage,
+      x: 240,
+      y: 240,
+      radius: 140,
+      color: img.ColorRgb8(181, 77, 43),
+    ); // Terracotta craft
+    img.drawCircle(
+      demoImage,
+      x: 240,
+      y: 240,
+      radius: 100,
+      color: img.ColorRgb8(30, 47, 93),
+    ); // Indigo motif
     final rawBytes = Uint8List.fromList(img.encodeJpg(demoImage, quality: 90));
 
     final craft = await controller.captureAndProcess(rawBytes);
@@ -91,7 +104,10 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
               Expanded(
                 child: Text(
                   'Processed in ${craft.processingDurationMs}ms (Budget: ${Timings.segmentationBudget.inMilliseconds}ms)',
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
@@ -100,13 +116,15 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
       );
 
       // Transition to voice cataloger flow with craft ID
-      context.push('/cataloger');
+      if (mounted) {
+        unawaited(context.push('/cataloger'));
+      }
     }
   }
 
   @override
   void dispose() {
-    _tts.stop();
+    unawaited(_tts.stop());
     super.dispose();
   }
 
@@ -136,7 +154,11 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
             icon: const Icon(Icons.volume_up_rounded, size: 28),
             tooltip: 'Speak guidance',
             onPressed: () {
-              _speakPrompt('आपने जो बनाया है वह दिखाइए. Show me what you made');
+              unawaited(
+                _speakPrompt(
+                  'आपने जो बनाया है वह दिखाइए. Show me what you made',
+                ),
+              );
             },
           ),
         ],
@@ -154,7 +176,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                 promptText: 'आपने जो बनाया है वह दिखाइए\nShow me what you made',
                 icon: Icons.camera_alt_rounded,
                 onReplayAudio: () {
-                  _speakPrompt('आपने जो बनाया है वह दिखाइए');
+                  unawaited(_speakPrompt('आपने जो बनाया है वह दिखाइए'));
                 },
               ),
             ),
@@ -186,38 +208,45 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                   children: [
                     // Viewfinder Framing Grid & Guide
                     Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.crop_free_rounded,
-                            size: 110,
-                            color: hasWarning
-                                ? Palette.warning.withValues(alpha: 0.8)
-                                : Colors.white.withValues(alpha: 0.7),
-                          ),
-                          const SizedBox(height: Sizes.gapMedium),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(Sizes.radius),
-                            ),
-                            child: const Text(
-                              'Center craft inside frame\nवस्तु को केंद्र में रखें',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: Sizes.minBodyText,
-                                fontWeight: FontWeight.w600,
-                                height: 1.2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(Sizes.gapSmall),
+                        child: FittedBox(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.crop_free_rounded,
+                                size: 80,
+                                color: hasWarning
+                                    ? Palette.warning.withValues(alpha: 0.8)
+                                    : Colors.white.withValues(alpha: 0.7),
                               ),
-                            ),
+                              const SizedBox(height: Sizes.gapSmall),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  borderRadius:
+                                      BorderRadius.circular(Sizes.radius),
+                                ),
+                                child: const Text(
+                                  'Center craft inside frame\nवस्तु को केंद्र में रखें',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: Sizes.minBodyText,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
 
@@ -232,7 +261,8 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                           decoration: BoxDecoration(
                             color: Palette.warningLight,
                             borderRadius: BorderRadius.circular(Sizes.radius),
-                            border: Border.all(color: Palette.warning, width: 2),
+                            border:
+                                Border.all(color: Palette.warning, width: 2),
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.black26,
@@ -251,7 +281,8 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  quality.guidanceMessage ?? 'Check lighting and focus',
+                                  quality.guidanceMessage ??
+                                      'Check lighting and focus',
                                   style: const TextStyle(
                                     color: Palette.ink,
                                     fontSize: 16,
@@ -260,10 +291,17 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.volume_up_rounded, color: Palette.warning),
+                                icon: const Icon(
+                                  Icons.volume_up_rounded,
+                                  color: Palette.warning,
+                                ),
                                 onPressed: () {
                                   if (quality.guidanceMessage != null) {
-                                    _speakPrompt(quality.guidanceMessage!);
+                                    unawaited(
+                                      _speakPrompt(
+                                        quality.guidanceMessage!,
+                                      ),
+                                    );
                                   }
                                 },
                               ),
@@ -274,9 +312,9 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
 
                     // Active ML processing overlay
                     if (captureState.isProcessing)
-                      Container(
+                      const ColoredBox(
                         color: Colors.black54,
-                        child: const Center(
+                        child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -323,7 +361,8 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                     ),
                     icon: const Icon(Icons.photo_library_outlined, size: 30),
                     tooltip: 'Gallery',
-                    onPressed: captureState.isProcessing ? null : _onShutterPressed,
+                    onPressed:
+                        captureState.isProcessing ? null : _onShutterPressed,
                   ),
 
                   // Shutter Button (96dp primary action target)
@@ -339,8 +378,9 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                         border: Border.all(color: Colors.white, width: 4),
                         boxShadow: [
                           BoxShadow(
-                            color: (hasWarning ? Palette.warning : Palette.primary)
-                                .withValues(alpha: 0.4),
+                            color:
+                                (hasWarning ? Palette.warning : Palette.primary)
+                                    .withValues(alpha: 0.4),
                             blurRadius: 16,
                             offset: const Offset(0, 4),
                           ),
@@ -375,12 +415,16 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                       captureState.isFlashOn
                           ? Icons.flash_on_rounded
                           : Icons.flash_off_rounded,
-                      color: captureState.isFlashOn ? Palette.goldAccent : Palette.ink,
+                      color: captureState.isFlashOn
+                          ? Palette.goldAccent
+                          : Palette.ink,
                       size: 30,
                     ),
                     tooltip: 'Flash',
                     onPressed: () {
-                      ref.read(captureControllerProvider.notifier).toggleFlash();
+                      ref
+                          .read(captureControllerProvider.notifier)
+                          .toggleFlash();
                     },
                   ),
                 ],
