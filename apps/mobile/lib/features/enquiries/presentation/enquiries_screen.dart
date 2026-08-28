@@ -63,36 +63,66 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
     final state = ref.watch(enquiriesControllerProvider);
 
     return Scaffold(
+      backgroundColor: Palette.surface,
       appBar: AppBar(
-        title: const Text(
-          'ऑर्डर और पूछताछ • Enquiries',
-          style: TextStyle(fontWeight: FontWeight.w700),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Palette.affirm.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.mark_chat_unread_rounded,
+                color: Palette.affirm,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 10),
+            const Text(
+              'ऑर्डर और संदेश • Orders',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+                color: Palette.ink,
+              ),
+            ),
+          ],
         ),
-        backgroundColor: Palette.surfaceContainer,
+        backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           if (state.unreadCount > 0)
             Container(
-              margin: const EdgeInsets.only(right: 16),
+              margin: const EdgeInsets.only(right: 14),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: Palette.affirm,
                 borderRadius: BorderRadius.circular(Sizes.radius),
+                boxShadow: [
+                  BoxShadow(
+                    color: Palette.affirm.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(
-                    Icons.mark_chat_unread_rounded,
+                    Icons.notifications_active_rounded,
                     color: Colors.white,
-                    size: 20,
+                    size: 18,
                   ),
                   const SizedBox(width: 6),
                   Text(
                     '${state.unreadCount} New',
                     style: const TextStyle(
                       color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
                     ),
                   ),
                 ],
@@ -113,6 +143,7 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                 promptText:
                     'खरीदारों के नए संदेश और ऑर्डर\nIncoming buyer messages & orders',
                 icon: Icons.mark_chat_unread_rounded,
+                accentColor: Palette.affirm,
                 onReplayAudio: () {
                   unawaited(
                     _tts.speak('यहाँ खरीदारों के नए संदेश और ऑर्डर दिखाई देंगे'),
@@ -133,16 +164,16 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                               Icon(
                                 Icons.notifications_none_rounded,
                                 size: 80,
-                                color: Palette.muted.withValues(alpha: 0.5),
+                                color: Palette.muted.withValues(alpha: 0.4),
                               ),
                               const SizedBox(height: Sizes.gapMedium),
                               const Text(
-                                'No new enquiries yet.\nIncoming buyer alerts will appear here.',
+                                'अभी कोई नया संदेश नहीं है\nIncoming buyer alerts will appear here',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: Sizes.minBodyText,
                                   color: Palette.muted,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
@@ -158,24 +189,39 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                             final isPlaying =
                                 state.activePlayingId == enquiry.id;
 
-                            return Card(
-                              elevation: enquiry.isUnread ? 3 : 1,
-                              shape: RoundedRectangleBorder(
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
                                 borderRadius:
                                     BorderRadius.circular(Sizes.cardRadius),
-                                side: BorderSide(
-                                  color: enquiry.isUnread
-                                      ? Palette.primary
-                                      : Palette.surfaceContainerHigh,
-                                  width: enquiry.isUnread ? 2 : 1,
+                                border: Border.all(
+                                  color: isPlaying
+                                      ? Palette.goldAccent
+                                      : enquiry.isUnread
+                                          ? Palette.primary
+                                          : Palette.surfaceContainerHigh,
+                                  width: isPlaying
+                                      ? 2.5
+                                      : enquiry.isUnread
+                                          ? 2
+                                          : 1.2,
                                 ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: enquiry.isUnread
+                                        ? Palette.primary.withValues(alpha: 0.1)
+                                        : Palette.ink.withValues(alpha: 0.05),
+                                    blurRadius: 14,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Header: Buyer info & Triple Channel status
+                                    // Header: Buyer Avatar, Name, Location
                                     Row(
                                       children: [
                                         CircleAvatar(
@@ -201,16 +247,17 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                               Text(
                                                 enquiry.buyerName,
                                                 style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w800,
                                                   color: Palette.ink,
                                                 ),
                                               ),
-                                              if (enquiry.productTitle != null)
+                                              if (enquiry.productTitle !=
+                                                  null)
                                                 Text(
-                                                  enquiry.productTitle!,
+                                                  'उत्पाद: ${enquiry.productTitle!}',
                                                   style: const TextStyle(
-                                                    fontSize: 15,
+                                                    fontSize: 14,
                                                     color: Palette.muted,
                                                     fontWeight: FontWeight.w600,
                                                   ),
@@ -239,19 +286,22 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                     // Message text box
                                     Container(
                                       width: double.infinity,
-                                      padding: const EdgeInsets.all(12),
+                                      padding: const EdgeInsets.all(14),
                                       decoration: BoxDecoration(
-                                        color: Palette.surfaceContainer,
+                                        color: Palette.surface,
                                         borderRadius:
                                             BorderRadius.circular(Sizes.radius),
+                                        border: Border.all(
+                                          color: Palette.surfaceContainerHigh,
+                                        ),
                                       ),
                                       child: Text(
                                         enquiry.messageText,
                                         style: const TextStyle(
-                                          fontSize: Sizes.minBodyText,
+                                          fontSize: 16,
                                           color: Palette.ink,
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.3,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.35,
                                         ),
                                       ),
                                     ),
@@ -273,6 +323,7 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                                   ? Palette.goldAccent
                                                   : Palette.primary,
                                               foregroundColor: Colors.white,
+                                              elevation: 0,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(
@@ -280,19 +331,22 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                                 ),
                                               ),
                                             ),
-                                            icon: Icon(
-                                              isPlaying
-                                                  ? Icons.volume_up_rounded
-                                                  : Icons.play_arrow_rounded,
-                                              size: 28,
-                                            ),
+                                            icon: isPlaying
+                                                ? const SoundWaveBars(
+                                                    color: Colors.white,
+                                                    barCount: 4,
+                                                  )
+                                                : const Icon(
+                                                    Icons.volume_up_rounded,
+                                                    size: 26,
+                                                  ),
                                             label: Text(
                                               isPlaying
-                                                  ? 'Playing...'
+                                                  ? 'चल रहा है...'
                                                   : 'संदेश सुनें (Listen)',
                                               style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w700,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w800,
                                               ),
                                             ),
                                             onPressed: () =>
@@ -312,6 +366,7 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                               ),
                                               backgroundColor: Palette.affirm,
                                               foregroundColor: Colors.white,
+                                              elevation: 0,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(
@@ -321,14 +376,14 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                             ),
                                             icon: const Icon(
                                               Icons.check_rounded,
-                                              size: 28,
+                                              size: 26,
                                             ),
                                             label: const Text(
                                               'स्वीकार करें\n(Accept)',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w700,
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w800,
                                               ),
                                             ),
                                             onPressed: () {
@@ -349,7 +404,7 @@ class _EnquiriesScreenState extends ConsumerState<EnquiriesScreen> {
                                                     style: TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                          FontWeight.w700,
                                                     ),
                                                   ),
                                                 ),

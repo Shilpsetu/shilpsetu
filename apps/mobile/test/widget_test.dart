@@ -9,7 +9,7 @@ void main() {
         child: ShilpsetuApp(),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.textContaining('Shilpsetu'), findsWidgets);
   });

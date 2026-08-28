@@ -12,9 +12,9 @@ import 'package:shilpsetu/ml/models/quality_assessment.dart';
 
 /// Primary capture screen (Flutter Dev A).
 ///
-/// Features:
-/// - Real-time camera viewfinder
-/// - Pre-shutter quality gate banner (blur, backlight, underexposure)
+/// Crafted specifically for zero-literacy rural artisans:
+/// - Real-time viewfinder with studio guidelines
+/// - Pre-shutter quality gate HUD banner (blur, backlight, underexposure)
 /// - 96dp primary capture shutter button (Sizes.primaryActionTarget)
 /// - 64dp secondary control buttons (Sizes.minTouchTarget)
 /// - Zero-literacy spoken capture prompts & multi-lingual audio guidance
@@ -25,14 +25,20 @@ class CaptureScreen extends ConsumerStatefulWidget {
   ConsumerState<CaptureScreen> createState() => _CaptureScreenState();
 }
 
-class _CaptureScreenState extends ConsumerState<CaptureScreen> {
+class _CaptureScreenState extends ConsumerState<CaptureScreen>
+    with SingleTickerProviderStateMixin {
   late final FlutterTts _tts;
+  late final AnimationController _pulseController;
   String? _lastSpokenWarning;
 
   @override
   void initState() {
     super.initState();
     _initTts();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
   }
 
   Future<void> _initTts() async {
@@ -70,7 +76,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
 
     // Create demo craft sample image (high contrast pattern)
     final demoImage = img.Image(width: 480, height: 480);
-    img.fill(demoImage, color: img.ColorRgb8(240, 235, 220));
+    img.fill(demoImage, color: img.ColorRgb8(245, 240, 230));
     img.fillCircle(
       demoImage,
       x: 240,
@@ -96,16 +102,20 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Palette.affirm,
-          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(Sizes.radius),
+          ),
+          duration: const Duration(seconds: 3),
           content: Row(
             children: [
-              const Icon(Icons.check_circle_rounded, color: Colors.white),
+              const Icon(Icons.check_circle_rounded, color: Colors.white, size: 28),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Processed in ${craft.processingDurationMs}ms (Budget: ${Timings.segmentationBudget.inMilliseconds}ms)',
+                  'फोटो तैयार! ${craft.processingDurationMs}ms में स्टूडियो फिनिशिंग',
                   style: const TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                     fontSize: 16,
                   ),
                 ),
@@ -124,6 +134,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
 
   @override
   void dispose() {
+    _pulseController.dispose();
     unawaited(_tts.stop());
     super.dispose();
   }
@@ -142,24 +153,54 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
     final hasWarning = !quality.isAcceptable;
 
     return Scaffold(
+      backgroundColor: Palette.surface,
       appBar: AppBar(
-        title: const Text(
-          'शिल्पसेतु • Shilpsetu',
-          style: TextStyle(fontWeight: FontWeight.w700),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Palette.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.auto_awesome_rounded,
+                color: Palette.primary,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 10),
+            const Text(
+              'शिल्पसेतु • Shilpsetu',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+                color: Palette.ink,
+                letterSpacing: -0.3,
+              ),
+            ),
+          ],
         ),
-        backgroundColor: Palette.surfaceContainer,
+        backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.volume_up_rounded, size: 28),
-            tooltip: 'Speak guidance',
-            onPressed: () {
-              unawaited(
-                _speakPrompt(
-                  'आपने जो बनाया है वह दिखाइए. Show me what you made',
-                ),
-              );
-            },
+          Container(
+            margin: const EdgeInsets.only(right: 12),
+            child: IconButton.filledTonal(
+              icon: const Icon(Icons.volume_up_rounded, size: 26),
+              style: IconButton.styleFrom(
+                backgroundColor: Palette.goldAccentLight,
+                foregroundColor: Palette.goldAccent,
+              ),
+              tooltip: 'Speak guidance',
+              onPressed: () {
+                unawaited(
+                  _speakPrompt(
+                    'आपने जो बनाया है वह दिखाइए. Show me what you made',
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -186,27 +227,28 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: Sizes.gutter),
                 decoration: BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.circular(Sizes.cardRadius),
+                  color: const Color(0xFF12141A),
+                  borderRadius: BorderRadius.circular(Sizes.cardRadius + 4),
                   border: Border.all(
                     color: hasWarning
                         ? Palette.warning
-                        : Palette.primary.withValues(alpha: 0.3),
-                    width: hasWarning ? 4 : 2,
+                        : Palette.primary.withValues(alpha: 0.4),
+                    width: hasWarning ? 3.5 : 2,
                   ),
                   boxShadow: [
-                    if (hasWarning)
-                      BoxShadow(
-                        color: Palette.warning.withValues(alpha: 0.25),
-                        blurRadius: 12,
-                        spreadRadius: 2,
-                      ),
+                    BoxShadow(
+                      color: hasWarning
+                          ? Palette.warning.withValues(alpha: 0.3)
+                          : Palette.ink.withValues(alpha: 0.15),
+                      blurRadius: 18,
+                      offset: const Offset(0, 6),
+                    ),
                   ],
                 ),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Viewfinder Framing Grid & Guide
+                    // Viewfinder Framing Grid & Saliency Target Guide
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(Sizes.gapSmall),
@@ -215,32 +257,44 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.crop_free_rounded,
-                                size: 80,
-                                color: hasWarning
-                                    ? Palette.warning.withValues(alpha: 0.8)
-                                    : Colors.white.withValues(alpha: 0.7),
+                              AnimatedBuilder(
+                                animation: _pulseController,
+                                builder: (context, child) {
+                                  final scale = 1.0 + (_pulseController.value * 0.05);
+                                  return Transform.scale(
+                                    scale: scale,
+                                    child: Icon(
+                                      Icons.crop_free_rounded,
+                                      size: 88,
+                                      color: hasWarning
+                                          ? Palette.warning.withValues(alpha: 0.85)
+                                          : Colors.white.withValues(alpha: 0.8),
+                                    ),
+                                  );
+                                },
                               ),
                               const SizedBox(height: Sizes.gapSmall),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
+                                  horizontal: 18,
                                   vertical: 8,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.black54,
+                                  color: Colors.black.withValues(alpha: 0.65),
                                   borderRadius:
                                       BorderRadius.circular(Sizes.radius),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                  ),
                                 ),
                                 child: const Text(
-                                  'Center craft inside frame\nवस्तु को केंद्र में रखें',
+                                  'वस्तु को फ्रेम के बीच में रखें\nCenter craft in frame',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: Sizes.minBodyText,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.2,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.25,
                                   ),
                                 ),
                               ),
@@ -253,11 +307,11 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                     // Pre-shutter Quality Gate Overlay Banner
                     if (hasWarning)
                       Positioned(
-                        top: 16,
-                        left: 16,
-                        right: 16,
+                        top: 14,
+                        left: 14,
+                        right: 14,
                         child: Container(
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: Palette.warningLight,
                             borderRadius: BorderRadius.circular(Sizes.radius),
@@ -266,34 +320,45 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.black26,
-                                blurRadius: 8,
-                                offset: Offset(0, 2),
+                                blurRadius: 10,
+                                offset: Offset(0, 3),
                               ),
                             ],
                           ),
                           child: Row(
                             children: [
-                              const Icon(
-                                Icons.warning_amber_rounded,
-                                color: Palette.warning,
-                                size: 32,
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: const BoxDecoration(
+                                  color: Palette.warning,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   quality.guidanceMessage ??
-                                      'Check lighting and focus',
+                                      'कृपया रोशनी और फोकस जांचें',
                                   style: const TextStyle(
                                     color: Palette.ink,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
                                   ),
                                 ),
                               ),
-                              IconButton(
+                              IconButton.filledTonal(
                                 icon: const Icon(
                                   Icons.volume_up_rounded,
                                   color: Palette.warning,
+                                  size: 22,
+                                ),
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Colors.white,
                                 ),
                                 onPressed: () {
                                   if (quality.guidanceMessage != null) {
@@ -313,23 +378,24 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                     // Active ML processing overlay
                     if (captureState.isProcessing)
                       const ColoredBox(
-                        color: Colors.black54,
+                        color: Colors.black87,
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               CircularProgressIndicator(
-                                color: Palette.onPrimary,
-                                strokeWidth: 4,
+                                color: Palette.goldAccent,
+                                strokeWidth: 4.5,
                               ),
                               SizedBox(height: Sizes.gapMedium),
                               Text(
-                                'Enhancing craft photo...\nस्टूडियो फोटो तैयार हो रही है...',
+                                'स्टूडियो फोटो तैयार हो रही है...\nEnhancing craft photo...',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: Sizes.minBodyText,
-                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  height: 1.3,
                                 ),
                               ),
                             ],
@@ -351,81 +417,131 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Gallery picker button (64dp target)
-                  IconButton.filledTonal(
-                    style: IconButton.styleFrom(
-                      minimumSize: const Size(
-                        Sizes.minTouchTarget,
-                        Sizes.minTouchTarget,
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: captureState.isProcessing ? null : _onShutterPressed,
+                      borderRadius: BorderRadius.circular(32),
+                      child: Ink(
+                        width: Sizes.minTouchTarget,
+                        height: Sizes.minTouchTarget,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Palette.muted.withValues(alpha: 0.2),
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Palette.ink.withValues(alpha: 0.06),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.photo_library_outlined,
+                          size: 28,
+                          color: Palette.ink,
+                        ),
                       ),
-                      backgroundColor: Palette.surfaceContainerHigh,
                     ),
-                    icon: const Icon(Icons.photo_library_outlined, size: 30),
-                    tooltip: 'Gallery',
-                    onPressed:
-                        captureState.isProcessing ? null : _onShutterPressed,
                   ),
 
-                  // Shutter Button (96dp primary action target)
-                  InkWell(
-                    onTap: captureState.isProcessing ? null : _onShutterPressed,
-                    borderRadius: BorderRadius.circular(50),
-                    child: Container(
-                      width: Sizes.primaryActionTarget,
-                      height: Sizes.primaryActionTarget,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: hasWarning ? Palette.warning : Palette.primary,
-                        border: Border.all(color: Colors.white, width: 4),
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                (hasWarning ? Palette.warning : Palette.primary)
-                                    .withValues(alpha: 0.4),
-                            blurRadius: 16,
-                            offset: const Offset(0, 4),
+                  // Shutter Button (96dp primary action target with radiant aura)
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: captureState.isProcessing ? null : _onShutterPressed,
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                        width: Sizes.primaryActionTarget,
+                        height: Sizes.primaryActionTarget,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: hasWarning
+                                ? [Palette.warning, const Color(0xFFB45309)]
+                                : [Palette.primary, Palette.primaryLight],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                        ],
-                      ),
-                      child: captureState.isProcessing
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Icon(
-                              Icons.camera_alt_rounded,
-                              size: 48,
-                              color: Palette.onPrimary,
+                          boxShadow: [
+                            BoxShadow(
+                              color: (hasWarning ? Palette.warning : Palette.primary)
+                                  .withValues(alpha: 0.4),
+                              blurRadius: 18,
+                              offset: const Offset(0, 6),
                             ),
+                          ],
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 3.5),
+                          ),
+                          child: captureState.isProcessing
+                              ? const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 3,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.camera_alt_rounded,
+                                  size: 44,
+                                  color: Palette.onPrimary,
+                                ),
+                        ),
+                      ),
                     ),
                   ),
 
                   // Flash toggle button (64dp target)
-                  IconButton.filledTonal(
-                    style: IconButton.styleFrom(
-                      minimumSize: const Size(
-                        Sizes.minTouchTarget,
-                        Sizes.minTouchTarget,
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        ref
+                            .read(captureControllerProvider.notifier)
+                            .toggleFlash();
+                      },
+                      borderRadius: BorderRadius.circular(32),
+                      child: Ink(
+                        width: Sizes.minTouchTarget,
+                        height: Sizes.minTouchTarget,
+                        decoration: BoxDecoration(
+                          color: captureState.isFlashOn
+                              ? Palette.goldAccentLight
+                              : Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: captureState.isFlashOn
+                                ? Palette.goldAccent
+                                : Palette.muted.withValues(alpha: 0.2),
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Palette.ink.withValues(alpha: 0.06),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          captureState.isFlashOn
+                              ? Icons.flash_on_rounded
+                              : Icons.flash_off_rounded,
+                          color: captureState.isFlashOn
+                              ? Palette.goldAccent
+                              : Palette.ink,
+                          size: 28,
+                        ),
                       ),
-                      backgroundColor: captureState.isFlashOn
-                          ? Palette.goldAccentLight
-                          : Palette.surfaceContainerHigh,
                     ),
-                    icon: Icon(
-                      captureState.isFlashOn
-                          ? Icons.flash_on_rounded
-                          : Icons.flash_off_rounded,
-                      color: captureState.isFlashOn
-                          ? Palette.goldAccent
-                          : Palette.ink,
-                      size: 30,
-                    ),
-                    tooltip: 'Flash',
-                    onPressed: () {
-                      ref
-                          .read(captureControllerProvider.notifier)
-                          .toggleFlash();
-                    },
                   ),
                 ],
               ),
