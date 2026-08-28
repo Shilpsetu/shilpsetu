@@ -41,7 +41,7 @@ class DeviceMlSegmenter implements MlSegmenter {
 
   @override
   Future<SegmentationResult> processImage(Uint8List imageBytes) async {
-    final stopwatch = Stopwatch().start();
+    final stopwatch = Stopwatch()..start();
 
     // Decode source image
     final sourceImage = img.decodeImage(imageBytes);
