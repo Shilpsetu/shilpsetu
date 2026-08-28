@@ -159,17 +159,13 @@ class HTTPValidationError {
   });
 
   factory HTTPValidationError.fromJson(Map<String, dynamic> json) => HTTPValidationError(
-        detail: json['detail'] == null
-            ? null
-            : (json['detail'] as List<dynamic>)
-                .map((e) => ValidationError.fromJson(e as Map<String, dynamic>))
-                .toList(),
+        detail: json['detail'] == null ? null : (json['detail'] as List<dynamic>).map((e) => ValidationError.fromJson(e as Map<String, dynamic>)).toList(),
       );
 
   final List<ValidationError>? detail;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'detail': detail == null ? null : detail!.map((e) => e.toJson()).toList(),
+        'detail': detail == null ? null : detail.map((e) => e.toJson()).toList(),
       };
 }
 
