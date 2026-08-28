@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT.
 //
 // Source: packages/api_client_dart/openapi.json
-// Schema sha256: b009074517a7d3b6
+// Schema sha256: 5717c6a7f1f26258
 // Regenerate: python tools/gen_dart_client.py
 
 // ignore_for_file: type=lint
