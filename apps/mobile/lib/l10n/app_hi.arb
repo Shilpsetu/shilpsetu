@@ -3,5 +3,15 @@
   "appTitle": "शिल्पसेतु",
   "capturePrompt": "आपने जो बनाया है वह दिखाइए",
   "recordPrompt": "इसके बारे में बताइए",
-  "confirmPublish": "क्या यह सही है?"
+  "confirmPublish": "क्या यह सही है?",
+  "qualityBlur": "फ़ोटो धुंधली है। कृपया हाथ स्थिर रखें।",
+  "qualityDark": "बहुत अंधेरा है। कृपया रोशनी में जाएं।",
+  "qualityBacklight": "रोशनी वस्तु के पीछे है। रोशनी की ओर मुख करें।",
+  "navCapture": "फ़ोटो लें",
+  "navCatalog": "मेरे उत्पाद",
+  "navEnquiries": "ऑर्डर और पूछताछ",
+  "priceFloor": "उचित पारिश्रमिक न्यूनतम",
+  "priceSuggested": "सुझाया गया मूल्य",
+  "priceStretch": "प्रीमियम मूल्य",
+  "belowFloorWarning": "इस मूल्य से कम पर आपको अपनी मेहनत और सामग्री में घाटा होगा।"
 }
