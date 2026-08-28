@@ -15,6 +15,10 @@ flutter pub get
 flutter run
 ```
 
+Mobile CI stays dormant until `android/` is committed, then runs on every PR.
+Run `dart format .` before that first push — the scaffolding was written by
+hand and has not been through the formatter.
+
 ## Every day
 
 ```bash

@@ -83,7 +83,11 @@ flutter create . --platforms=android,ios --org in.shilpsetu
 flutter pub get
 flutter run
 ```
-`flutter create` generates the native folders without touching `lib/`.
+`flutter create` generates the native folders without touching `lib/`. Commit
+them — **mobile CI is switched off until they exist**, and turns itself on the
+moment you push them. Before that first push, run `dart format .` inside
+`apps/mobile`, because CI checks formatting and the hand-written scaffolding
+has never been through the formatter.
 
 **First three**
 1. Camera preview running on the reference device, respecting

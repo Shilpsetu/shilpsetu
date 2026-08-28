@@ -47,6 +47,11 @@ jobs:
   mobile:
     name: mobile (analyze · tests)
     runs-on: ubuntu-latest
+    # The native platform folders are produced by `flutter create .`, which the
+    # app devs run once and commit. Until then there is no app to analyse, and
+    # a permanently red X on day one just teaches everyone to ignore CI. This
+    # turns itself on the moment the app is scaffolded.
+    if: hashFiles('apps/mobile/android/**') != ''
     defaults:
       run:
         working-directory: apps/mobile

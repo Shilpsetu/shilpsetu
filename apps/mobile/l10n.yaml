@@ -1,0 +1,9 @@
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+output-dir: lib/l10n/generated
+synthetic-package: false
+# Fail the build when a locale is missing a string. An unlocalised string in
+# an app for people who do not read English is a bug, not a warning.
+untranslated-messages-file: lib/l10n/untranslated.json

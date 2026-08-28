@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "appTitle": "Shilpsetu",
+  "@appTitle": {
+    "description": "Application name, shown in the launcher"
+  },
+  "capturePrompt": "Show me what you made",
+  "@capturePrompt": {
+    "description": "Spoken aloud and shown on the capture screen. Keep it short — it is heard, not read."
+  },
+  "recordPrompt": "Tell me about it",
+  "@recordPrompt": {
+    "description": "Spoken prompt before the artisan records a voice note"
+  },
+  "confirmPublish": "Is this right?",
+  "@confirmPublish": {
+    "description": "Spoken after the generated description is read back"
+  }
+}

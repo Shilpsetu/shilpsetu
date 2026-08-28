@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shilpsetu/core/theme/tokens.dart';
 
@@ -15,6 +16,11 @@ class ShilpsetuApp extends StatelessWidget {
       title: 'Shilpsetu',
       debugShowCheckedModeBanner: false,
       supportedLocales: SupportedLocales.phase1,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
