@@ -47,26 +47,53 @@ jobs:
   mobile:
     name: mobile (analyze · tests)
     runs-on: ubuntu-latest
-    # The native platform folders are produced by `flutter create .`, which the
-    # app devs run once and commit. Until then there is no app to analyse, and
-    # a permanently red X on day one just teaches everyone to ignore CI. This
-    # turns itself on the moment the app is scaffolded.
-    if: hashFiles('apps/mobile/android/**') != ''
     defaults:
       run:
         working-directory: apps/mobile
     steps:
       - uses: actions/checkout@v4
 
+      # The native platform folders come from `flutter create .`, which the app
+      # devs run once and commit. Until they land there is no app to analyse,
+      # so the steps below skip instead of failing — a permanently red X on day
+      # one only teaches a team to ignore CI. This switches itself on the moment
+      # apps/mobile/android is committed.
+      #
+      # The check lives here rather than in a job-level `if:` because
+      # hashFiles() needs a checked-out workspace, and job conditions are
+      # evaluated before checkout. Putting it there makes the whole workflow
+      # invalid, and then *no* jobs run at all.
+      - name: Is the Flutter app scaffolded yet?
+        id: scaffolded
+        run: |
+          if [ -d android ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::apps/mobile/android not found — skipping mobile checks until 'flutter create .' is committed."
+          fi
+
       - uses: subosito/flutter-action@v2
+        if: steps.scaffolded.outputs.ready == 'true'
         with:
           channel: stable
           cache: true
 
-      - run: flutter pub get
-      - run: dart format --output=none --set-exit-if-changed lib test
-      - run: flutter analyze --fatal-infos
-      - run: flutter test
+      - name: Dependencies
+        if: steps.scaffolded.outputs.ready == 'true'
+        run: flutter pub get
+
+      - name: Format check
+        if: steps.scaffolded.outputs.ready == 'true'
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze
+        if: steps.scaffolded.outputs.ready == 'true'
+        run: flutter analyze --fatal-infos
+
+      - name: Tests
+        if: steps.scaffolded.outputs.ready == 'true'
+        run: flutter test
 
   contract:
     name: api contract (no drift)
@@ -89,7 +116,7 @@ jobs:
         run: uv run pytest ../../tools/test_gen_dart_client.py
 
       - name: Regenerate schema and client
-        run: ./tools/gen_api.sh
+        run: bash tools/gen_api.sh
 
       - name: Fail if the committed contract is stale
         run: |
