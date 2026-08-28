@@ -79,7 +79,7 @@ everyone's issues, and hold the 14 September scope freeze.
 **Setup**
 ```bash
 cd apps/mobile
-flutter create . --platforms=android,ios --org in.shilpsetu.app --project-name shilpsetu
+flutter create . --platforms=android,ios --org in.shilpsetu
 flutter pub get
 flutter run
 ```

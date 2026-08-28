@@ -10,7 +10,7 @@ The native `android/` and `ios/` folders are not committed yet. Generate them
 over this tree without touching `lib/`:
 
 ```bash
-flutter create . --platforms=android,ios --org in.shilpsetu.app --project-name shilpsetu
+flutter create . --platforms=android,ios --org in.shilpsetu
 flutter pub get
 flutter run
 ```

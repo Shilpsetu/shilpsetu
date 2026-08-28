@@ -46,7 +46,7 @@ docker compose -f infra/docker-compose.yml up -d
 
 # Mobile
 cd apps/mobile
-flutter create . --platforms=android,ios --org in.shilpsetu.app --project-name shilpsetu
+flutter create . --platforms=android,ios --org in.shilpsetu
 flutter pub get && flutter run
 ```
 
