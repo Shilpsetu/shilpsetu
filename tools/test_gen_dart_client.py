@@ -132,3 +132,8 @@ class TestModelEmission:
 def test_string_defaults_are_quoted() -> None:
     assert dart_default("INR", "String") == "'INR'"
     assert dart_default([], "List<String>") == "const []"
+
+
+if __name__ == "__main__":
+    raise SystemExit(pytest.main([str(Path(__file__).resolve())]))
+
