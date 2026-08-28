@@ -46,7 +46,7 @@ class DartType:
             decode=lambda e: f"{e} == null ? null : {inner.decode(e)}",
             encode=(lambda e: e)
             if encodes_identity
-            else (lambda e: f"{e} == null ? null : {inner.encode(e)}"),
+            else (lambda e: f"{e} == null ? null : {inner.encode(f'{e}!')}"),
         )
 
 

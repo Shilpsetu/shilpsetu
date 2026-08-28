@@ -165,7 +165,7 @@ class HTTPValidationError {
   final List<ValidationError>? detail;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'detail': detail == null ? null : detail.map((e) => e.toJson()).toList(),
+        'detail': detail == null ? null : detail!.map((e) => e.toJson()).toList(),
       };
 }
 
