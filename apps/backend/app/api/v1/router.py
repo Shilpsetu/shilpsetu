@@ -23,12 +23,17 @@ REQUIRED_ATTRIBUTES = (
 )
 
 
-@router.get("/health", tags=["ops"])
+@router.get("/health", tags=["ops"], operation_id="health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@router.get("/crafts", response_model=list[schemas.CraftOut], tags=["catalog"])
+@router.get(
+    "/crafts",
+    response_model=list[schemas.CraftOut],
+    tags=["catalog"],
+    operation_id="listCrafts",
+)
 async def list_crafts() -> list[schemas.CraftOut]:
     return [
         schemas.CraftOut(
@@ -44,7 +49,12 @@ async def list_crafts() -> list[schemas.CraftOut]:
     ]
 
 
-@router.post("/catalog/from-voice", response_model=schemas.CatalogOut, tags=["catalog"])
+@router.post(
+    "/catalog/from-voice",
+    response_model=schemas.CatalogOut,
+    tags=["catalog"],
+    operation_id="catalogFromVoice",
+)
 async def catalog_from_voice(payload: schemas.TranscribeIn) -> schemas.CatalogOut:
     """Voice note in, structured listing out.
 
@@ -94,7 +104,12 @@ async def catalog_from_voice(payload: schemas.TranscribeIn) -> schemas.CatalogOu
     )
 
 
-@router.post("/pricing/quote", response_model=schemas.PriceOut, tags=["pricing"])
+@router.post(
+    "/pricing/quote",
+    response_model=schemas.PriceOut,
+    tags=["pricing"],
+    operation_id="quotePrice",
+)
 async def quote(payload: schemas.PriceIn) -> schemas.PriceOut:
     """Floor, band and suggestion -- never one opaque number (Bet 03)."""
     try:

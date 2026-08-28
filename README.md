@@ -12,6 +12,11 @@ already runs.
 > roughly 1,500 artisans against 54 lakh beneficiaries. The channel is not the
 > problem. **Getting onto it is.** Karigar is the on-ramp.
 
+## ▶ New here? Open [`START_HERE.md`](START_HERE.md)
+
+It routes you to your role, your exact folders, and your first three tasks.
+Two minutes and you are working.
+
 ## The four bets
 
 1. **Zero-literacy by construction** — no typing on the artisan's critical
@@ -60,12 +65,23 @@ packages/api_client_dart   GENERATED from OpenAPI — never hand-edited
 infra             docker-compose, seed data (craft taxonomy, wage basis)
 docs/adr          The six decisions, with the costs we accepted
 docs/WORKLOAD.md  Who builds what, and in what order
+tools             gen_api.sh, seed_issues.sh, check_setup.sh
+```
+
+## For the lead, once
+
+```bash
+# 1. put real GitHub handles in .github/CODEOWNERS and START_HERE.md
+./tools/check_setup.sh            # tells you if you missed something
+./tools/seed_issues.sh --dry-run  # preview 29 issues across the six of you
+./tools/seed_issues.sh            # create them, labelled and assigned
 ```
 
 ## Read before you write code
 
 | Document | Why |
 |---|---|
+| [`START_HERE.md`](START_HERE.md) | **Start here.** Your role, folders and first tasks. |
 | [`docs/karigar-plan-v1.html`](docs/karigar-plan-v1.html) | The full plan. Open it in a browser. |
 | [`docs/WORKLOAD.md`](docs/WORKLOAD.md) | Your tasks and your file boundaries. |
 | [`docs/adr/`](docs/adr/) | Why the architecture is the way it is. |

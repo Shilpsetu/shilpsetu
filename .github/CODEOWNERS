@@ -1,0 +1,44 @@
+# Who owns what. GitHub auto-requests review from the owner of every path a PR
+# touches, which is how the boundaries in docs/WORKLOAD.md stay real instead of
+# aspirational.
+#
+# ⚠️  REPLACE THE PLACEHOLDER HANDLES BELOW WITH REAL GITHUB USERNAMES.
+#     Until you do, CODEOWNERS silently does nothing.
+#     Run ./tools/check_setup.sh to be told if you forgot.
+
+*                                   @LEAD
+
+# --- Mobile: split by feature, not by layer, so the two app devs never collide
+apps/mobile/lib/features/capture/    @APPDEV-A
+apps/mobile/lib/features/enquiries/  @APPDEV-A
+apps/mobile/lib/ml/                  @APPDEV-A @MLDEV
+
+apps/mobile/lib/features/cataloger/  @APPDEV-B
+apps/mobile/lib/features/catalog/    @APPDEV-B
+apps/mobile/lib/features/pricing/    @APPDEV-B
+apps/mobile/lib/l10n/                @APPDEV-B
+
+# Shared mobile scaffolding — changes here affect both app devs, so the lead
+# reviews alongside them.
+apps/mobile/lib/core/                @LEAD @APPDEV-A @APPDEV-B
+
+# --- Backend
+apps/backend/                        @BACKEND
+apps/backend/app/providers/          @MLDEV
+apps/backend/app/domain/pricing.py   @MLDEV @LEAD
+apps/backend/app/exporters/          @BACKEND @LEAD
+infra/                               @BACKEND
+
+# --- ML
+packages/ml/                         @MLDEV
+
+# --- Data + design
+infra/seeds/                         @DESIGNDATA @MLDEV
+docs/design/                         @DESIGNDATA
+apps/buyer_portal/                   @DESIGNDATA @BACKEND
+
+# --- Contract and decisions: the lead reviews every change
+packages/api_client_dart/            @LEAD
+tools/                               @LEAD
+docs/adr/                            @LEAD
+.github/                             @LEAD

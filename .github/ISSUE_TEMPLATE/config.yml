@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Where am I supposed to work?
+    url: https://github.com/OWNER/REPO/blob/main/START_HERE.md
+    about: Find your role, your folders, and your first three tasks.
+  - name: Why is the architecture like this?
+    url: https://github.com/OWNER/REPO/tree/main/docs/adr
+    about: The six decisions on record, with the costs we accepted.

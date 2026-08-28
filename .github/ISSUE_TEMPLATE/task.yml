@@ -1,0 +1,53 @@
+name: Task
+description: A unit of work from the roadmap
+labels: ["task"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - mobile-capture
+        - mobile-cataloger
+        - mobile-catalog
+        - mobile-pricing
+        - mobile-enquiries
+        - backend
+        - ml
+        - design-data
+        - infra
+        - docs
+    validations: { required: true }
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      options:
+        - "Phase 0 — foundations (by 2 Sep)"
+        - "Phase 1 — walking skeleton (by 14 Sep)"
+        - "Phase 2 — depth"
+        - "Phase 3 — market linkage"
+        - "Phase 4 — hardening"
+    validations: { required: true }
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Done looks like
+      description: Observable behaviour, not implementation. What can someone watch happen?
+      placeholder: "An artisan records a Hindi voice note and hears the description read back."
+    validations: { required: true }
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes, constraints, gotchas
+
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Check before you start
+      options:
+        - label: I have read my section of docs/WORKLOAD.md
+        - label: This does not add typing to the artisan's critical path

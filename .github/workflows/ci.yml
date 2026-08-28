@@ -63,9 +63,42 @@ jobs:
       - run: flutter analyze --fatal-infos
       - run: flutter test
 
-  # Guards ADR-0005: the committed Dart client must match the live OpenAPI
-  # schema. Enable once the generator is wired in Phase 0.
-  # contract:
-  #   name: api client drift
-  #   runs-on: ubuntu-latest
-  #   steps: ...
+  contract:
+    name: api contract (no drift)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: apps/backend/uv.lock
+
+      - name: Install backend
+        working-directory: apps/backend
+        run: uv sync --locked
+
+      - name: Generator tests
+        working-directory: apps/backend
+        run: uv run pytest ../../tools/test_gen_dart_client.py
+
+      - name: Regenerate schema and client
+        run: ./tools/gen_api.sh
+
+      - name: Fail if the committed contract is stale
+        run: |
+          if ! git diff --quiet -- packages/api_client_dart; then
+            echo "::error::The committed API contract does not match the code."
+            echo ""
+            echo "Someone changed a FastAPI schema without regenerating."
+            echo "Fix it locally:"
+            echo ""
+            echo "    ./tools/gen_api.sh"
+            echo "    git add packages/api_client_dart && git commit"
+            echo ""
+            echo "Drift found:"
+            git --no-pager diff -- packages/api_client_dart
+            exit 1
+          fi
+          echo "Contract is current."

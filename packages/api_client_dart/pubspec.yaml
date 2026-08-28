@@ -1,0 +1,17 @@
+name: karigar_api
+description: Generated Dart client for the Karigar API. Do not hand-edit lib/.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  dio: ^5.7.0
+  # Rupee amounts are arbitrary-precision on the wire and stay that way here.
+  # Money in a double is a bug waiting to be demoed.
+  decimal: ^3.0.2
+
+dev_dependencies:
+  very_good_analysis: ^6.0.0
+  test: ^1.25.0

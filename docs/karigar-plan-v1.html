@@ -367,7 +367,7 @@
           <div class="tag">Bet 03 · Economics</div>
           <h3>A wage floor, not a black box</h3>
           <p>We do not output one confident number. We output a <b>floor</b> derived from materials plus hours at the state handloom fair-wage rate, and a <b>market band</b> from craft-matched comparables — and we show the artisan the gap between the two.</p>
-          <p>The app will not suggest a price below the floor. On a Social Justice problem statement, an app that refuses to let an artisan underprice their own labour is the impact slide.</p>
+          <p>The app will not suggest a price below the floor, and when the floor sits <em>above</em> the whole market band it says so out loud rather than hiding it. On a Social Justice problem statement, an app that refuses to let an artisan underprice their own labour is the impact slide.</p>
         </div>
         <div class="card">
           <div class="tag">Bet 04 · Distribution</div>
@@ -735,6 +735,15 @@
 
       <h4>Output</h4>
       <p>A floor, a suggested price, a stretch price, and a plain-language spoken rationale: <em>"Your materials and eleven days of work come to ₹1,850. Sarees like yours sell between ₹2,400 and ₹3,200. I suggest ₹2,700."</em> Every number the artisan hears can be explained back to them, which is the whole point.</p>
+
+      <h3>When the floor is above the market</h3>
+      <p>Running the implementation end to end surfaced the case that turns out to matter most. A Pochampally saree takes around 88 hours. At the state fair-wage rate that is a floor near <b>₹6,550</b> — while comparable sarees list at ₹2,400–₹3,200. The floor sits <em>above</em> the entire market band.</p>
+      <p>The tempting fix is to clamp the band up to the floor. It is also wrong: it produces the spoken sentence <em>"items like yours sell between ₹6,552 and ₹6,552"</em>, and, worse, it conceals the finding. So the engine treats this as a first-class outcome. It reports the true band, prices at the floor, and says the hard thing plainly:</p>
+      <div class="callout">
+        <span class="eyebrow">Spoken aloud, in her language</span>
+        <p><em>"Your materials and eleven days of work come to 6,552 rupees. Items like yours are selling for only 2,400 to 3,200 rupees. That is less than your work is worth. I have set your price at 6,552 rupees. It may sell slowly, but it will not sell at a loss."</em></p>
+      </div>
+      <p>This is the strongest thing in the build. For one artisan it is a decision she can now make with the numbers in front of her. Aggregated across a cluster it is evidence — a measurement of exactly how far below fair wage a craft has been pushed, in a form the Ministry can act on. No team that ships a single confident price can produce it.</p>
     </section>
 
     <section id="data">
