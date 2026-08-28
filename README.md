@@ -1,4 +1,4 @@
-# Karigar
+# Shilpsetu
 
 **Smart India Hackathon 2026 · Problem Statement 26090**
 Ministry of Social Justice and Empowerment · Software · Heritage & Culture
@@ -10,7 +10,7 @@ already runs.
 > We are not proposing a new platform. Bharat TULIP exists — an Amazon.in
 > storefront, Mystore listings, four curated collections — and it has served
 > roughly 1,500 artisans against 54 lakh beneficiaries. The channel is not the
-> problem. **Getting onto it is.** Karigar is the on-ramp.
+> problem. **Getting onto it is.** Shilpsetu is the on-ramp.
 
 ## ▶ New here? Open [`START_HERE.md`](START_HERE.md)
 
@@ -46,7 +46,7 @@ docker compose -f infra/docker-compose.yml up -d
 
 # Mobile
 cd apps/mobile
-flutter create . --platforms=android,ios --org in.gov.karigar --project-name karigar
+flutter create . --platforms=android,ios --org in.shilpsetu.app --project-name shilpsetu
 flutter pub get && flutter run
 ```
 
@@ -82,7 +82,7 @@ tools             gen_api.sh, seed_issues.sh, check_setup.sh
 | Document | Why |
 |---|---|
 | [`START_HERE.md`](START_HERE.md) | **Start here.** Your role, folders and first tasks. |
-| [`docs/karigar-plan-v1.html`](docs/karigar-plan-v1.html) | The full plan. Open it in a browser. |
+| [`docs/shilpsetu-plan-v1.html`](docs/shilpsetu-plan-v1.html) | The full plan. Open it in a browser. |
 | [`docs/WORKLOAD.md`](docs/WORKLOAD.md) | Your tasks and your file boundaries. |
 | [`docs/adr/`](docs/adr/) | Why the architecture is the way it is. |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Definition of done. Read the non-negotiables. |

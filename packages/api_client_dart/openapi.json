@@ -405,7 +405,7 @@
   },
   "info": {
     "description": "Market on-ramp for marginalised artisans. SIH 2026, PS 26090 (Ministry of Social Justice and Empowerment).",
-    "title": "Karigar API",
+    "title": "Shilpsetu API",
     "version": "0.1.0"
   },
   "openapi": "3.1.0",

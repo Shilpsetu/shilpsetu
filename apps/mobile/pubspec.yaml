@@ -1,4 +1,4 @@
-name: karigar
+name: shilpsetu
 description: Market on-ramp for marginalised artisans. SIH 2026, PS 26090.
 publish_to: none
 version: 0.1.0+1
@@ -27,7 +27,7 @@ dependencies:
   path_provider: ^2.1.5
 
   # Network — the generated client (ADR-0005). Never hand-edit its lib/.
-  karigar_api:
+  shilpsetu_api:
     path: ../../packages/api_client_dart
   dio: ^5.7.0
   connectivity_plus: ^6.1.0

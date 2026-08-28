@@ -1,7 +1,7 @@
 [project]
-name = "karigar-backend"
+name = "shilpsetu-backend"
 version = "0.1.0"
-description = "Karigar API - market on-ramp for marginalised artisans (SIH 2026, PS 26090)"
+description = "Shilpsetu API - market on-ramp for marginalised artisans (SIH 2026, PS 26090)"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115",

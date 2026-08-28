@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT.
 //
 // Source: packages/api_client_dart/openapi.json
-// Schema sha256: cb78c12b15f1848c
+// Schema sha256: b009074517a7d3b6
 // Regenerate: python tools/gen_dart_client.py
 
 // ignore_for_file: type=lint
@@ -309,18 +309,18 @@ class ValidationError {
       };
 }
 
-/// Typed client for the Karigar API.
+/// Typed client for the Shilpsetu API.
 ///
 /// Construct with a configured [Dio] so callers control the base URL,
 /// timeouts and interceptors:
 ///
 /// ```dart
-/// final api = KarigarApi(Dio(BaseOptions(
+/// final api = ShilpsetuApi(Dio(BaseOptions(
 ///   baseUrl: 'http://10.0.2.2:8000',
 /// )));
 /// ```
-class KarigarApi {
-  const KarigarApi(this._dio);
+class ShilpsetuApi {
+  const ShilpsetuApi(this._dio);
 
   final Dio _dio;
 

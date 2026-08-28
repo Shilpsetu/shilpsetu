@@ -1,4 +1,4 @@
-# karigar_api — generated
+# shilpsetu_api — generated
 
 **Do not edit `lib/`.** It is generated from `openapi.json`, which is itself
 generated from the FastAPI app. CI fails if either is stale (ADR-0005).

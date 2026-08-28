@@ -8,7 +8,7 @@ from app.config import get_settings
 settings = get_settings()
 
 app = FastAPI(
-    title="Karigar API",
+    title="Shilpsetu API",
     version="0.1.0",
     description=(
         "Market on-ramp for marginalised artisans. SIH 2026, PS 26090 "
@@ -21,7 +21,7 @@ app.include_router(v1_router)
 @app.get("/", include_in_schema=False)
 async def root() -> dict[str, str]:
     return {
-        "service": "karigar-api",
+        "service": "shilpsetu-api",
         "provider_profile": settings.provider_profile.value,
         "docs": "/docs",
     }

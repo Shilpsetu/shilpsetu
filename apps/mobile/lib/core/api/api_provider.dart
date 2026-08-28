@@ -6,7 +6,7 @@ library;
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:karigar_api/karigar_api.dart';
+import 'package:shilpsetu_api/shilpsetu_api.dart';
 
 /// Where the backend lives during development.
 ///
@@ -15,10 +15,10 @@ import 'package:karigar_api/karigar_api.dart';
 /// machine's LAN address:
 ///
 /// ```
-/// flutter run --dart-define=KARIGAR_API_BASE_URL=http://192.168.1.42:8000
+/// flutter run --dart-define=SHILPSETU_API_BASE_URL=http://192.168.1.42:8000
 /// ```
 const String kApiBaseUrl = String.fromEnvironment(
-  'KARIGAR_API_BASE_URL',
+  'SHILPSETU_API_BASE_URL',
   defaultValue: 'http://10.0.2.2:8000',
 );
 
@@ -35,6 +35,6 @@ final dioProvider = Provider<Dio>((ref) {
   );
 });
 
-final apiProvider = Provider<KarigarApi>((ref) {
-  return KarigarApi(ref.watch(dioProvider));
+final apiProvider = Provider<ShilpsetuApi>((ref) {
+  return ShilpsetuApi(ref.watch(dioProvider));
 });

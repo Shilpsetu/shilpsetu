@@ -30,7 +30,7 @@ own, the commands to get running, and your first three tasks.
 You need this whatever your role — it is how you see real data.
 
 ```bash
-git clone <this repo> && cd karigar
+git clone <this repo> && cd shilpsetu
 cd apps/backend
 uv sync                      # installs Python 3.12 if you don't have it
 cp .env.example .env         # no keys needed, the defaults work
@@ -79,7 +79,7 @@ everyone's issues, and hold the 14 September scope freeze.
 **Setup**
 ```bash
 cd apps/mobile
-flutter create . --platforms=android,ios --org in.gov.karigar --project-name karigar
+flutter create . --platforms=android,ios --org in.shilpsetu.app --project-name shilpsetu
 flutter pub get
 flutter run
 ```
@@ -214,6 +214,6 @@ against your design system, so it blocks them if it is late.
 |---|---|
 | What am I building this week? | your section above, and `docs/WORKLOAD.md` |
 | Why is it built this way? | `docs/adr/` |
-| What is the whole plan? | `docs/karigar-plan-v1.html` — open in a browser |
+| What is the whole plan? | `docs/shilpsetu-plan-v1.html` — open in a browser |
 | Is my PR ready? | `.github/pull_request_template.md` |
 | How do I run things? | `apps/backend/README.md`, `apps/mobile/README.md` |

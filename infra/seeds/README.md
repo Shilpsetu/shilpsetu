@@ -4,7 +4,7 @@
 
 18 crafts across Bharat TULIP's four collections. Top-level grouping uses the
 Ministry's own collection names so an export drops onto the shelf they already
-run (see ADR notes and `docs/karigar-plan-v1.html`).
+run (see ADR notes and `docs/shilpsetu-plan-v1.html`).
 
 ### Before this ships -- owner: Design + data
 

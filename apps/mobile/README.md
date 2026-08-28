@@ -1,4 +1,4 @@
-# Karigar — mobile
+# Shilpsetu — mobile
 
 Flutter, Android-first. Two owners: **Flutter A** (capture, on-device ML,
 enquiries) and **Flutter B** (voice cataloger, catalog, pricing, i18n).
@@ -10,7 +10,7 @@ The native `android/` and `ios/` folders are not committed yet. Generate them
 over this tree without touching `lib/`:
 
 ```bash
-flutter create . --platforms=android,ios --org in.gov.karigar --project-name karigar
+flutter create . --platforms=android,ios --org in.shilpsetu.app --project-name shilpsetu
 flutter pub get
 flutter run
 ```

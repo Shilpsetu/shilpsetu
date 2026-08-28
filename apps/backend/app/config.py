@@ -22,13 +22,13 @@ class Settings(BaseSettings):
     app_env: str = "local"
     log_level: str = "INFO"
 
-    database_url: str = "postgresql+asyncpg://karigar:karigar@localhost:5432/karigar"
+    database_url: str = "postgresql+asyncpg://shilpsetu:shilpsetu@localhost:5432/shilpsetu"
     redis_url: str = "redis://localhost:6379/0"
 
     s3_endpoint_url: str = "http://localhost:9000"
-    s3_bucket: str = "karigar-media"
-    s3_access_key: str = "karigar"
-    s3_secret_key: str = "karigar-dev-secret"
+    s3_bucket: str = "shilpsetu-media"
+    s3_access_key: str = "shilpsetu"
+    s3_secret_key: str = "shilpsetu-dev-secret"
 
     # Provider selection ------------------------------------------------------
     provider_profile: ProviderProfile = ProviderProfile.MOCK

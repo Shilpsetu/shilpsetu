@@ -21,7 +21,7 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = REPO / "packages" / "api_client_dart" / "openapi.json"
-OUT_PATH = REPO / "packages" / "api_client_dart" / "lib" / "karigar_api.dart"
+OUT_PATH = REPO / "packages" / "api_client_dart" / "lib" / "shilpsetu_api.dart"
 
 # Pydantic v2 renders Decimal as a pattern-constrained string. Money must not
 # become a double, so we detect that shape and map it to package:decimal.
@@ -299,18 +299,18 @@ def build_client(spec: dict[str, Any]) -> str:
 
     return "\n".join(
         [
-            "/// Typed client for the Karigar API.",
+            "/// Typed client for the Shilpsetu API.",
             "///",
             "/// Construct with a configured [Dio] so callers control the base URL,",
             "/// timeouts and interceptors:",
             "///",
             "/// ```dart",
-            "/// final api = KarigarApi(Dio(BaseOptions(",
+            "/// final api = ShilpsetuApi(Dio(BaseOptions(",
             "///   baseUrl: 'http://10.0.2.2:8000',",
             "/// )));",
             "/// ```",
-            "class KarigarApi {",
-            "  const KarigarApi(this._dio);",
+            "class ShilpsetuApi {",
+            "  const ShilpsetuApi(this._dio);",
             "",
             "  final Dio _dio;",
             "",

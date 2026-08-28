@@ -1,4 +1,4 @@
-# Karigar backend
+# Shilpsetu backend
 
 FastAPI + Postgres/pgvector + Redis/ARQ. See `docs/adr/` for why.
 

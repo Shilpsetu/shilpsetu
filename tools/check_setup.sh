@@ -19,7 +19,7 @@ echo "Secrets"
 if git ls-files | grep -qE '(^|/)\.env$'; then note ".env is tracked — remove it"; else ok "no .env tracked"; fi
 
 echo "Contract"
-if [[ -f packages/api_client_dart/openapi.json && -f packages/api_client_dart/lib/karigar_api.dart ]]; then
+if [[ -f packages/api_client_dart/openapi.json && -f packages/api_client_dart/lib/shilpsetu_api.dart ]]; then
   ok "API contract and Dart client are committed"
 else note "run ./tools/gen_api.sh"; fi
 

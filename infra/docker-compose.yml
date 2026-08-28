@@ -1,16 +1,16 @@
-name: karigar
+name: shilpsetu
 
 services:
   db:
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: karigar
-      POSTGRES_PASSWORD: karigar
-      POSTGRES_DB: karigar
+      POSTGRES_USER: shilpsetu
+      POSTGRES_PASSWORD: shilpsetu
+      POSTGRES_DB: shilpsetu
     ports: ["5432:5432"]
     volumes: [".volumes/pg:/var/lib/postgresql/data"]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U karigar"]
+      test: ["CMD-SHELL", "pg_isready -U shilpsetu"]
       interval: 5s
       timeout: 3s
       retries: 12
@@ -29,8 +29,8 @@ services:
     image: minio/minio:latest
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: karigar
-      MINIO_ROOT_PASSWORD: karigar-dev-secret
+      MINIO_ROOT_USER: shilpsetu
+      MINIO_ROOT_PASSWORD: shilpsetu-dev-secret
     ports: ["9000:9000", "9001:9001"]
     volumes: [".volumes/minio:/data"]
     healthcheck:

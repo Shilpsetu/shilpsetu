@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:karigar/core/theme/tokens.dart';
+import 'package:shilpsetu/core/theme/tokens.dart';
 
 void main() {
-  runApp(const ProviderScope(child: KarigarApp()));
+  runApp(const ProviderScope(child: ShilpsetuApp()));
 }
 
-class KarigarApp extends StatelessWidget {
-  const KarigarApp({super.key});
+class ShilpsetuApp extends StatelessWidget {
+  const ShilpsetuApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Karigar',
+      title: 'Shilpsetu',
       debugShowCheckedModeBanner: false,
       supportedLocales: SupportedLocales.phase1,
       theme: ThemeData(
@@ -41,7 +41,7 @@ class _Placeholder extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(Sizes.gutter),
           child: Text(
-            'Karigar',
+            'Shilpsetu',
             style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
           ),
         ),
