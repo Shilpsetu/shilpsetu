@@ -1,57 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shilpsetu/core/localization/language_provider.dart';
+import 'package:shilpsetu/core/router/app_router.dart';
+import 'package:shilpsetu/core/theme/app_theme.dart';
 import 'package:shilpsetu/core/theme/tokens.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: ShilpsetuApp()));
 }
 
-class ShilpsetuApp extends StatelessWidget {
+class ShilpsetuApp extends ConsumerWidget {
   const ShilpsetuApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+    final langState = ref.watch(languageProvider);
+
+    return MaterialApp.router(
       title: 'Shilpsetu',
       debugShowCheckedModeBanner: false,
+      routerConfig: router,
+      theme: AppTheme.lightTheme,
+      locale: langState.selectedLanguage.locale,
       supportedLocales: SupportedLocales.phase1,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Palette.primary,
-          surface: Palette.surface,
-        ),
-        // Enforced globally so no screen can accidentally ship a small target.
-        materialTapTargetSize: MaterialTapTargetSize.padded,
-      ),
-      home: const _Placeholder(),
-    );
-  }
-}
-
-/// Replaced in Phase 0 by the go_router shell. Exists so `flutter run` works
-/// on day one and CI has something to analyse.
-class _Placeholder extends StatelessWidget {
-  const _Placeholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(Sizes.gutter),
-          child: Text(
-            'Shilpsetu',
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
-          ),
-        ),
-      ),
     );
   }
 }

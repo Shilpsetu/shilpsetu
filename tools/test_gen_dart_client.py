@@ -114,7 +114,26 @@ class TestModelEmission:
         assert "final String craftId;" in out
         assert "'craft_id': craftId," in out
 
+    def test_nullable_model_list_to_json(self) -> None:
+        out = build_model(
+            "HTTPValidationError",
+            {
+                "properties": {
+                    "detail": {
+                        "type": "array",
+                        "items": {"$ref": "#/components/schemas/ValidationError"},
+                    }
+                }
+            },
+        )
+        assert "'detail': detail == null ? null : detail!.map((e) => e.toJson()).toList()," in out
+
 
 def test_string_defaults_are_quoted() -> None:
     assert dart_default("INR", "String") == "'INR'"
     assert dart_default([], "List<String>") == "const []"
+
+
+if __name__ == "__main__":
+    raise SystemExit(pytest.main([str(Path(__file__).resolve())]))
+

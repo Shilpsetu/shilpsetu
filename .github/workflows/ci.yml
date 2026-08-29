@@ -83,6 +83,10 @@ jobs:
         if: steps.scaffolded.outputs.ready == 'true'
         run: flutter pub get
 
+      - name: Code generation
+        if: steps.scaffolded.outputs.ready == 'true'
+        run: dart run build_runner build --delete-conflicting-outputs
+
       - name: Format check
         if: steps.scaffolded.outputs.ready == 'true'
         run: dart format --output=none --set-exit-if-changed lib test

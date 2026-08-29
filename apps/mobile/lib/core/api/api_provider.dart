@@ -14,7 +14,7 @@ import 'package:shilpsetu_api/shilpsetu_api.dart';
 /// `localhost`. On a physical device over Wi-Fi, override this with your
 /// machine's LAN address:
 ///
-/// ```
+/// ```bash
 /// flutter run --dart-define=SHILPSETU_API_BASE_URL=http://192.168.1.42:8000
 /// ```
 const String kApiBaseUrl = String.fromEnvironment(

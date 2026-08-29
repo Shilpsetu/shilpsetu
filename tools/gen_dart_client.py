@@ -46,7 +46,7 @@ class DartType:
             decode=lambda e: f"{e} == null ? null : {inner.decode(e)}",
             encode=(lambda e: e)
             if encodes_identity
-            else (lambda e: f"{e} == null ? null : {inner.encode(e)}"),
+            else (lambda e: f"{e} == null ? null : {inner.encode(f'{e}!')}"),
         )
 
 
@@ -193,12 +193,15 @@ def build_model(name: str, schema: dict[str, Any]) -> str:
     for prop, node in schema.get("properties", {}).items():
         t = resolve(node, where=f"{name}.{prop}")
         has_default = "default" in node
+        is_required = prop in required
+        if not is_required and not has_default and not t.name.endswith("?") and t.name != "dynamic":
+            t = t.nullable()
         fields.append(
             Field(
                 json_name=prop,
                 dart_name=camel(prop),
                 type=t,
-                required=prop in required,
+                required=is_required,
                 default=dart_default(node["default"], t.name) if has_default else None,
             )
         )

@@ -15,5 +15,45 @@
   "confirmPublish": "Is this right?",
   "@confirmPublish": {
     "description": "Spoken after the generated description is read back"
+  },
+  "qualityBlur": "The photo is blurry. Please hold steady.",
+  "@qualityBlur": {
+    "description": "Spoken when camera detects blur before shutter"
+  },
+  "qualityDark": "Too dark. Please move to brighter light.",
+  "@qualityDark": {
+    "description": "Spoken when camera frame is underexposed"
+  },
+  "qualityBacklight": "Light is behind the object. Move to face the light.",
+  "@qualityBacklight": {
+    "description": "Spoken when lighting is backlit"
+  },
+  "navCapture": "Capture",
+  "@navCapture": {
+    "description": "Bottom nav item for camera capture"
+  },
+  "navCatalog": "My Products",
+  "@navCatalog": {
+    "description": "Bottom nav item for catalog"
+  },
+  "navEnquiries": "Orders & Enquiries",
+  "@navEnquiries": {
+    "description": "Bottom nav item for enquiries"
+  },
+  "priceFloor": "Fair Wage Floor",
+  "@priceFloor": {
+    "description": "Label for minimum price floor"
+  },
+  "priceSuggested": "Suggested Price",
+  "@priceSuggested": {
+    "description": "Label for suggested market price"
+  },
+  "priceStretch": "Premium Stretch",
+  "@priceStretch": {
+    "description": "Label for stretch price"
+  },
+  "belowFloorWarning": "Below this price, you are losing money on labor and materials.",
+  "@belowFloorWarning": {
+    "description": "Spoken warning when price is below fair wage floor"
   }
 }

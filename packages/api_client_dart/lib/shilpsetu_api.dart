@@ -1,7 +1,7 @@
 // GENERATED FILE — DO NOT EDIT.
 //
 // Source: packages/api_client_dart/openapi.json
-// Schema sha256: b009074517a7d3b6
+// Schema sha256: 5717c6a7f1f26258
 // Regenerate: python tools/gen_dart_client.py
 
 // ignore_for_file: type=lint
@@ -159,13 +159,13 @@ class HTTPValidationError {
   });
 
   factory HTTPValidationError.fromJson(Map<String, dynamic> json) => HTTPValidationError(
-        detail: (json['detail'] as List<dynamic>).map((e) => ValidationError.fromJson(e as Map<String, dynamic>)).toList(),
+        detail: json['detail'] == null ? null : (json['detail'] as List<dynamic>).map((e) => ValidationError.fromJson(e as Map<String, dynamic>)).toList(),
       );
 
-  final List<ValidationError> detail;
+  final List<ValidationError>? detail;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'detail': detail.map((e) => e.toJson()).toList(),
+        'detail': detail == null ? null : detail!.map((e) => e.toJson()).toList(),
       };
 }
 
@@ -290,14 +290,14 @@ class ValidationError {
         loc: (json['loc'] as List<dynamic>).map((e) => e).toList(),
         msg: json['msg'] as String,
         type: json['type'] as String,
-        ctx: json['ctx'] as Map<String, dynamic>,
+        ctx: json['ctx'] == null ? null : json['ctx'] as Map<String, dynamic>,
         input: json['input'],
       );
 
   final List<dynamic> loc;
   final String msg;
   final String type;
-  final Map<String, dynamic> ctx;
+  final Map<String, dynamic>? ctx;
   final dynamic input;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
