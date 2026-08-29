@@ -5,19 +5,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image/image.dart' as img;
+import 'package:shilpsetu/core/localization/language_provider.dart';
 import 'package:shilpsetu/core/theme/accessible_widgets.dart';
 import 'package:shilpsetu/core/theme/tokens.dart';
 import 'package:shilpsetu/features/capture/presentation/controllers/capture_controller.dart';
+import 'package:shilpsetu/features/home/presentation/widgets/app_info_menu.dart';
 import 'package:shilpsetu/ml/models/quality_assessment.dart';
 
-/// Primary capture screen (Flutter Dev A).
+/// Primary capture screen.
 ///
-/// Crafted specifically for zero-literacy rural artisans:
+/// Features:
+/// - Displays and speaks exclusively in the user's selected language
 /// - Real-time viewfinder with studio guidelines
 /// - Pre-shutter quality gate HUD banner (blur, backlight, underexposure)
 /// - 96dp primary capture shutter button (Sizes.primaryActionTarget)
 /// - 64dp secondary control buttons (Sizes.minTouchTarget)
-/// - Zero-literacy spoken capture prompts & multi-lingual audio guidance
 class CaptureScreen extends ConsumerStatefulWidget {
   const CaptureScreen({super.key});
 
@@ -29,7 +31,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
     with SingleTickerProviderStateMixin {
   late final FlutterTts _tts;
   late final AnimationController _pulseController;
-  String? _lastSpokenWarning;
+  QualityIssue? _lastSpokenIssue;
 
   @override
   void initState() {
@@ -41,40 +43,106 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
     )..repeat(reverse: true);
   }
 
+  bool _isPlayingPrompt = false;
+
   Future<void> _initTts() async {
     _tts = FlutterTts();
     try {
-      await _tts.setLanguage('hi-IN');
+      final lang = ref.read(languageProvider).selectedLanguage;
+      await _tts.setLanguage(lang.ttsLocale);
       await _tts.setSpeechRate(0.45);
       await _tts.setPitch(1);
-    } catch (_) {
-      // Fallback if TTS engine isn't configured in test/emulator
-    }
+      _tts
+        ..setCompletionHandler(() {
+          if (mounted) {
+            setState(() {
+              _isPlayingPrompt = false;
+            });
+          }
+        })
+        ..setCancelHandler(() {
+          if (mounted) {
+            setState(() {
+              _isPlayingPrompt = false;
+            });
+          }
+        })
+        ..setErrorHandler((_) {
+          if (mounted) {
+            setState(() {
+              _isPlayingPrompt = false;
+            });
+          }
+        });
+    } catch (_) {}
   }
 
   Future<void> _speakPrompt(String text) async {
+    if (_isPlayingPrompt) {
+      try {
+        await _tts.stop();
+      } catch (_) {}
+      if (mounted) {
+        setState(() {
+          _isPlayingPrompt = false;
+        });
+      }
+      return;
+    }
+
+    setState(() {
+      _isPlayingPrompt = true;
+    });
+
+    final lang = ref.read(languageProvider).selectedLanguage;
     try {
       await _tts.stop();
+      await _tts.setLanguage(lang.ttsLocale);
       await _tts.speak(text);
     } catch (_) {}
   }
 
+  String _getQualityMessage(QualityIssue issue, bool isEnglish) {
+    switch (issue) {
+      case QualityIssue.blur:
+        return isEnglish
+            ? 'Photo is blurry. Please hold steady.'
+            : 'फ़ोटो धुंधली है। कृपया हाथ स्थिर रखें।';
+      case QualityIssue.tooDark:
+        return isEnglish
+            ? 'Too dark. Please move towards light.'
+            : 'बहुत अंधेरा है। कृपया रोशनी में जाएं।';
+      case QualityIssue.backlight:
+        return isEnglish
+            ? 'Backlight detected. Face towards light.'
+            : 'रोशनी वस्तु के पीछे है। रोशनी की ओर मुख करें।';
+      case QualityIssue.none:
+        return isEnglish ? 'Ready to capture' : 'फ़ोटो लेने के लिए तैयार';
+    }
+  }
+
   void _handleQualityAlert(QualityAssessment quality) {
-    if (!quality.isAcceptable && quality.guidanceMessage != null) {
-      if (_lastSpokenWarning != quality.guidanceMessage) {
-        _lastSpokenWarning = quality.guidanceMessage;
-        unawaited(_speakPrompt(quality.guidanceMessage!));
+    final isEnglish =
+        ref.read(languageProvider).selectedLanguage == AppLanguage.english;
+
+    if (!quality.isAcceptable && quality.issue != QualityIssue.none) {
+      if (_lastSpokenIssue != quality.issue) {
+        _lastSpokenIssue = quality.issue;
+        final msg = _getQualityMessage(quality.issue, isEnglish);
+        unawaited(_speakPrompt(msg));
       }
     } else {
-      _lastSpokenWarning = null;
+      _lastSpokenIssue = null;
     }
   }
 
   /// Simulates / triggers camera capture
   Future<void> _onShutterPressed() async {
     final controller = ref.read(captureControllerProvider.notifier);
+    final isEnglish =
+        ref.read(languageProvider).selectedLanguage == AppLanguage.english;
 
-    // Create demo craft sample image (high contrast pattern)
+    // Create demo craft sample image
     final demoImage = img.Image(width: 480, height: 480);
     img.fill(demoImage, color: img.ColorRgb8(245, 240, 230));
     img.fillCircle(
@@ -83,14 +151,14 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
       y: 240,
       radius: 140,
       color: img.ColorRgb8(181, 77, 43),
-    ); // Terracotta craft
+    );
     img.drawCircle(
       demoImage,
       x: 240,
       y: 240,
       radius: 100,
       color: img.ColorRgb8(30, 47, 93),
-    ); // Indigo motif
+    );
     final rawBytes = Uint8List.fromList(img.encodeJpg(demoImage, quality: 90));
 
     final craft = await controller.captureAndProcess(rawBytes);
@@ -98,7 +166,10 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
     if (!mounted) return;
 
     if (craft != null) {
-      // Show studio enhancement benchmark banner
+      final successMsg = isEnglish
+          ? 'Photo ready in ${craft.processingDurationMs}ms!'
+          : 'फोटो तैयार! ${craft.processingDurationMs} मिलीसेकंड में तैयार';
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Palette.affirm,
@@ -109,11 +180,15 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
           duration: const Duration(seconds: 3),
           content: Row(
             children: [
-              const Icon(Icons.check_circle_rounded, color: Colors.white, size: 28),
+              const Icon(
+                Icons.check_circle_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'फोटो तैयार! ${craft.processingDurationMs}ms में स्टूडियो फिनिशिंग',
+                  successMsg,
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
@@ -125,7 +200,6 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
         ),
       );
 
-      // Transition to voice cataloger flow with craft ID
       if (mounted) {
         unawaited(context.push('/cataloger'));
       }
@@ -142,6 +216,8 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
   @override
   Widget build(BuildContext context) {
     final captureState = ref.watch(captureControllerProvider);
+    final lang = ref.watch(languageProvider).selectedLanguage;
+    final isEnglish = lang == AppLanguage.english;
     final quality = captureState.quality;
 
     ref.listen<CaptureState>(captureControllerProvider, (prev, next) {
@@ -151,57 +227,33 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
     });
 
     final hasWarning = !quality.isAcceptable;
+    final qualityMsg = _getQualityMessage(quality.issue, isEnglish);
 
     return Scaffold(
       backgroundColor: Palette.surface,
       appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Palette.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.auto_awesome_rounded,
-                color: Palette.primary,
-                size: 22,
-              ),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'शिल्पसेतु • Shilpsetu',
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 20,
-                color: Palette.ink,
-                letterSpacing: -0.3,
-              ),
-            ),
-          ],
-        ),
+        title: ShilpsetuBrandLogo(isHindi: !isEnglish),
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            child: IconButton.filledTonal(
-              icon: const Icon(Icons.volume_up_rounded, size: 26),
-              style: IconButton.styleFrom(
-                backgroundColor: Palette.goldAccentLight,
-                foregroundColor: Palette.goldAccent,
-              ),
-              tooltip: 'Speak guidance',
-              onPressed: () {
-                unawaited(
-                  _speakPrompt(
-                    'आपने जो बनाया है वह दिखाइए. Show me what you made',
-                  ),
-                );
-              },
+          IconButton.filledTonal(
+            icon: const Icon(Icons.volume_up_rounded, size: 24),
+            style: IconButton.styleFrom(
+              backgroundColor: Palette.goldAccentLight,
+              foregroundColor: Palette.goldAccent,
             ),
+            onPressed: () {
+              unawaited(
+                _speakPrompt(
+                  isEnglish
+                      ? 'Show what you made. Center the craft in the frame.'
+                      : 'आपने जो बनाया है वह दिखाइए। वस्तु को फ्रेम के बीच में रखें।',
+                ),
+              );
+            },
           ),
+          const SizedBox(width: 6),
+          const AppInfoIconButton(),
         ],
       ),
       body: SafeArea(
@@ -214,15 +266,23 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                 vertical: Sizes.gapSmall,
               ),
               child: ZeroLiteracyPromptCard(
-                promptText: 'आपने जो बनाया है वह दिखाइए\nShow me what you made',
+                promptText: isEnglish
+                    ? 'Show what you made'
+                    : 'आपने जो बनाया है वह दिखाइए',
                 icon: Icons.camera_alt_rounded,
                 onReplayAudio: () {
-                  unawaited(_speakPrompt('आपने जो बनाया है वह दिखाइए'));
+                  unawaited(
+                    _speakPrompt(
+                      isEnglish
+                          ? 'Show what you made'
+                          : 'आपने जो बनाया है वह दिखाइए',
+                    ),
+                  );
                 },
               ),
             ),
 
-            // Viewfinder Area / Camera Container
+            // Viewfinder Area
             Expanded(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: Sizes.gutter),
@@ -248,7 +308,6 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Viewfinder Framing Grid & Saliency Target Guide
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(Sizes.gapSmall),
@@ -260,15 +319,18 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                               AnimatedBuilder(
                                 animation: _pulseController,
                                 builder: (context, child) {
-                                  final scale = 1.0 + (_pulseController.value * 0.05);
+                                  final scale =
+                                      1.0 + (_pulseController.value * 0.05);
                                   return Transform.scale(
                                     scale: scale,
                                     child: Icon(
                                       Icons.crop_free_rounded,
                                       size: 88,
                                       color: hasWarning
-                                          ? Palette.warning.withValues(alpha: 0.85)
-                                          : Colors.white.withValues(alpha: 0.8),
+                                          ? Palette.warning
+                                              .withValues(alpha: 0.85)
+                                          : Colors.white
+                                              .withValues(alpha: 0.8),
                                     ),
                                   );
                                 },
@@ -287,10 +349,12 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                                     color: Colors.white.withValues(alpha: 0.15),
                                   ),
                                 ),
-                                child: const Text(
-                                  'वस्तु को फ्रेम के बीच में रखें\nCenter craft in frame',
+                                child: Text(
+                                  isEnglish
+                                      ? 'Center craft in frame'
+                                      : 'वस्तु को फ्रेम के बीच में रखें',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
@@ -342,8 +406,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  quality.guidanceMessage ??
-                                      'कृपया रोशनी और फोकस जांचें',
+                                  qualityMsg,
                                   style: const TextStyle(
                                     color: Palette.ink,
                                     fontSize: 15,
@@ -361,13 +424,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                                   backgroundColor: Colors.white,
                                 ),
                                 onPressed: () {
-                                  if (quality.guidanceMessage != null) {
-                                    unawaited(
-                                      _speakPrompt(
-                                        quality.guidanceMessage!,
-                                      ),
-                                    );
-                                  }
+                                  unawaited(_speakPrompt(qualityMsg));
                                 },
                               ),
                             ],
@@ -377,21 +434,23 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
 
                     // Active ML processing overlay
                     if (captureState.isProcessing)
-                      const ColoredBox(
+                      ColoredBox(
                         color: Colors.black87,
                         child: Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              CircularProgressIndicator(
+                              const CircularProgressIndicator(
                                 color: Palette.goldAccent,
                                 strokeWidth: 4.5,
                               ),
-                              SizedBox(height: Sizes.gapMedium),
+                              const SizedBox(height: Sizes.gapMedium),
                               Text(
-                                'स्टूडियो फोटो तैयार हो रही है...\nEnhancing craft photo...',
+                                isEnglish
+                                    ? 'Enhancing photo...'
+                                    : 'फोटो तैयार हो रही है...',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
@@ -407,7 +466,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
               ),
             ),
 
-            // Shutter Controls (Strict 64dp & 96dp Touch Targets)
+            // Shutter Controls
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: Sizes.gutter,
@@ -416,11 +475,11 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Gallery picker button (64dp target)
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: captureState.isProcessing ? null : _onShutterPressed,
+                      onTap:
+                          captureState.isProcessing ? null : _onShutterPressed,
                       borderRadius: BorderRadius.circular(32),
                       child: Ink(
                         width: Sizes.minTouchTarget,
@@ -449,11 +508,12 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                     ),
                   ),
 
-                  // Shutter Button (96dp primary action target with radiant aura)
+                  // Shutter Button
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: captureState.isProcessing ? null : _onShutterPressed,
+                      onTap:
+                          captureState.isProcessing ? null : _onShutterPressed,
                       borderRadius: BorderRadius.circular(50),
                       child: Container(
                         width: Sizes.primaryActionTarget,
@@ -470,7 +530,9 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: (hasWarning ? Palette.warning : Palette.primary)
+                              color: (hasWarning
+                                      ? Palette.warning
+                                      : Palette.primary)
                                   .withValues(alpha: 0.4),
                               blurRadius: 18,
                               offset: const Offset(0, 6),
@@ -499,7 +561,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen>
                     ),
                   ),
 
-                  // Flash toggle button (64dp target)
+                  // Flash toggle button
                   Material(
                     color: Colors.transparent,
                     child: InkWell(

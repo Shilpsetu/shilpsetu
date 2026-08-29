@@ -80,6 +80,16 @@ abstract final class Palette {
   /// Camera guidance warning (blur, underexposure, backlight).
   static const Color warning = Color(0xFFD97706);
   static const Color warningLight = Color(0xFFFEF3C7);
+
+  /// Brand signature logo and hero container colors
+  static const Color logoBadgeBg = Color(0xFF2C328E);
+  static const Color logoOrange = Color(0xFFE85026);
+  static const Color logoInk = Color(0xFF1E212D);
+  static const Color purpleContainer = Color(0xFF676BB0);
+  static const Color purpleContainerDark = Color(0xFF575B9E);
+  static const Color purpleContainerLight = Color(0xFFEEEFFB);
+  static const Color amberButton = Color(0xFFF7A833);
+  static const Color amberButtonDark = Color(0xFFE59822);
 }
 
 /// Timing and latency budgets.

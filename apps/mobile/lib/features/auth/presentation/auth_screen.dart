@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shilpsetu/core/localization/language_provider.dart';
 import 'package:shilpsetu/core/theme/accessible_widgets.dart';
 import 'package:shilpsetu/core/theme/tokens.dart';
 import 'package:shilpsetu/features/auth/presentation/controllers/auth_controller.dart';
@@ -11,10 +12,10 @@ import 'package:shilpsetu/features/auth/presentation/controllers/auth_controller
 /// Authentication & Registration Screen.
 ///
 /// Features:
-/// - Validation criteria: Name (>= 2 characters) & Indian Phone Number (10 digits)
-/// - Zero-literacy audio guidance via Hindi/English TTS
-/// - Large 64dp/96dp touch targets
-/// - Direct transition to Home upon successful entry
+/// - Displays and speaks exclusively in the user's selected language
+/// - Zero mixed-language words or bilingual slashes
+/// - Validates Name and Indian Mobile Number (10 digits)
+/// - Direct transition to Home upon successful authentication
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
 
@@ -29,14 +30,23 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _isRegisterMode = true;
-  String _selectedCraft = 'मिट्टी शिल्प (Terracotta)';
+  String? _selectedCraft;
+  String? _customError;
 
-  final List<String> _craftOptions = const [
-    'मिट्टी शिल्प (Terracotta)',
-    'हथकरघा बुनाई (Handloom)',
-    'ढोकरा धातु (Dhokra Metal)',
-    'काष्ठ शिल्प (Woodcraft)',
-    'पारंपरिक चित्रकला (Painting)',
+  final List<String> _craftOptionsHindi = const [
+    'मिट्टी शिल्प',
+    'हथकरघा बुनाई',
+    'ढोकरा धातु',
+    'काष्ठ शिल्प',
+    'पारंपरिक चित्रकला',
+  ];
+
+  final List<String> _craftOptionsEnglish = const [
+    'Terracotta Clay',
+    'Handloom Weaving',
+    'Dhokra Metal',
+    'Woodcraft',
+    'Traditional Painting',
   ];
 
   @override
@@ -48,15 +58,18 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   Future<void> _initTts() async {
     _tts = FlutterTts();
     try {
-      await _tts.setLanguage('hi-IN');
+      final lang = ref.read(languageProvider).selectedLanguage;
+      await _tts.setLanguage(lang.ttsLocale);
       await _tts.setSpeechRate(0.45);
       await _tts.setPitch(1);
     } catch (_) {}
   }
 
   Future<void> _speakPrompt(String text) async {
+    final lang = ref.read(languageProvider).selectedLanguage;
     try {
       await _tts.stop();
+      await _tts.setLanguage(lang.ttsLocale);
       await _tts.speak(text);
     } catch (_) {}
   }
@@ -70,20 +83,49 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   }
 
   Future<void> _submit() async {
+    setState(() {
+      _customError = null;
+    });
+
     final controller = ref.read(authControllerProvider.notifier);
+    final lang = ref.read(languageProvider).selectedLanguage;
+    final isEnglish = lang == AppLanguage.english;
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
+
+    final craftList =
+        isEnglish ? _craftOptionsEnglish : _craftOptionsHindi;
+    final activeCraft = _selectedCraft ?? craftList.first;
+
+    if (_isRegisterMode && name.length < 2) {
+      final err = isEnglish
+          ? 'Please enter a valid full name (minimum 2 letters)'
+          : 'कृपया सही नाम दर्ज करें (कम से कम 2 अक्षर)';
+      setState(() => _customError = err);
+      unawaited(_speakPrompt(err));
+      return;
+    }
+
+    final cleanPhone = phone.replaceAll(RegExp(r'\D'), '');
+    if (cleanPhone.length != 10 || !RegExp(r'^[6-9]\d{9}$').hasMatch(cleanPhone)) {
+      final err = isEnglish
+          ? 'Please enter a valid 10-digit mobile number'
+          : 'कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें';
+      setState(() => _customError = err);
+      unawaited(_speakPrompt(err));
+      return;
+    }
 
     bool success;
     if (_isRegisterMode) {
       success = await controller.register(
         name: name,
-        phoneNumber: phone,
-        craftType: _selectedCraft,
+        phoneNumber: cleanPhone,
+        craftType: activeCraft,
       );
     } else {
       success = await controller.login(
-        phoneNumber: phone,
+        phoneNumber: cleanPhone,
         existingName: name.isNotEmpty ? name : null,
       );
     }
@@ -91,7 +133,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     if (!mounted) return;
 
     if (success) {
-      final userName = _isRegisterMode && name.isNotEmpty ? name : 'कारीगर जी';
+      final userName = name.isNotEmpty
+          ? name
+          : (isEnglish ? 'Artisan' : 'कारीगर जी');
+      final welcomeMsg = isEnglish
+          ? 'Welcome $userName to Shilpsetu!'
+          : 'नमस्ते $userName! शिल्पसेतु में आपका स्वागत है।';
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Palette.affirm,
@@ -109,7 +157,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'नमस्ते $userName! शिल्पसेतु में आपका स्वागत है।',
+                  welcomeMsg,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -121,14 +169,26 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
         ),
       );
 
-      // Navigate to Home page (/capture)
-      context.go('/capture');
+      context.go('/home');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
+    final lang = ref.watch(languageProvider).selectedLanguage;
+    final isEnglish = lang == AppLanguage.english;
+
+    final craftOptions =
+        isEnglish ? _craftOptionsEnglish : _craftOptionsHindi;
+    final activeCraft = _selectedCraft ?? craftOptions.first;
+
+    final displayedError = _customError ??
+        (authState.errorMessage != null
+            ? (isEnglish
+                ? 'Please check your name and 10-digit mobile number'
+                : authState.errorMessage)
+            : null);
 
     return Scaffold(
       backgroundColor: Palette.surface,
@@ -150,9 +210,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               ),
             ),
             const SizedBox(width: 10),
-            const Text(
-              'शिल्पसेतु • Shilpsetu',
-              style: TextStyle(
+            Text(
+              isEnglish ? 'Shilpsetu' : 'शिल्पसेतु',
+              style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 20,
                 color: Palette.ink,
@@ -161,25 +221,43 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           ],
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            child: IconButton.filledTonal(
-              icon: const Icon(Icons.volume_up_rounded, size: 26),
-              style: IconButton.styleFrom(
-                backgroundColor: Palette.goldAccentLight,
-                foregroundColor: Palette.goldAccent,
+          // Language switcher pill
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              backgroundColor: Palette.primary.withValues(alpha: 0.08),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              onPressed: () {
-                unawaited(
-                  _speakPrompt(
-                    _isRegisterMode
-                        ? 'शिल्पसेतु में शामिल होने के लिए कृपया अपना नाम और दस अंकों का मोबाइल नंबर दर्ज करें।'
-                        : 'लॉग इन करने के लिए अपना दस अंकों का मोबाइल नंबर दर्ज करें।',
-                  ),
-                );
-              },
             ),
+            icon: const Icon(Icons.translate_rounded, size: 18),
+            label: Text(
+              lang.nameNative,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+            onPressed: () => context.go('/language'),
           ),
+          const SizedBox(width: 8),
+          IconButton.filledTonal(
+            icon: const Icon(Icons.volume_up_rounded, size: 24),
+            style: IconButton.styleFrom(
+              backgroundColor: Palette.goldAccentLight,
+              foregroundColor: Palette.goldAccent,
+            ),
+            onPressed: () {
+              unawaited(
+                _speakPrompt(
+                  isEnglish
+                      ? (_isRegisterMode
+                          ? 'Please enter your full name and 10-digit mobile number to join Shilpsetu.'
+                          : 'Please enter your 10-digit mobile number to log in.')
+                      : (_isRegisterMode
+                          ? 'शिल्पसेतु में शामिल होने के लिए कृपया अपना नाम और दस अंकों का मोबाइल नंबर दर्ज करें।'
+                          : 'लॉग इन करने के लिए अपना दस अंकों का मोबाइल नंबर दर्ज करें।'),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 12),
         ],
       ),
       body: SafeArea(
@@ -192,18 +270,22 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               children: [
                 // Zero-Literacy Prompt Banner
                 ZeroLiteracyPromptCard(
-                  promptText: _isRegisterMode
-                      ? 'अपना नाम और मोबाइल नंबर दर्ज करें\nEnter your name & phone number'
-                      : 'अपना मोबाइल नंबर दर्ज करें\nEnter your mobile number',
+                  promptText: isEnglish
+                      ? (_isRegisterMode
+                          ? 'Enter your name and mobile number'
+                          : 'Enter your registered mobile number')
+                      : (_isRegisterMode
+                          ? 'अपना नाम और मोबाइल नंबर दर्ज करें'
+                          : 'अपना पंजीकृत मोबाइल नंबर दर्ज करें'),
                   icon: _isRegisterMode
                       ? Icons.person_add_alt_1_rounded
                       : Icons.login_rounded,
                   onReplayAudio: () {
                     unawaited(
                       _speakPrompt(
-                        _isRegisterMode
-                            ? 'कृपया अपना नाम और मोबाइल नंबर दर्ज करें'
-                            : 'कृपया अपना मोबाइल नंबर दर्ज करें',
+                        isEnglish
+                            ? 'Please enter your mobile number and name'
+                            : 'कृपया अपना नाम और मोबाइल नंबर दर्ज करें',
                       ),
                     );
                   },
@@ -211,15 +293,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
                 const SizedBox(height: Sizes.gapMedium),
 
-                // Mode Selector Toggle (Login / Register)
+                // Mode Selector Toggle
                 Container(
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: Palette.surfaceContainer,
                     borderRadius: BorderRadius.circular(Sizes.radius),
-                    border: Border.all(
-                      color: Palette.surfaceContainerHigh,
-                    ),
+                    border: Border.all(color: Palette.surfaceContainerHigh),
                   ),
                   child: Row(
                     children: [
@@ -228,9 +308,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           onTap: () {
                             setState(() {
                               _isRegisterMode = true;
+                              _customError = null;
                             });
                           },
-                          borderRadius: BorderRadius.circular(Sizes.radius - 4),
+                          borderRadius:
+                              BorderRadius.circular(Sizes.radius - 4),
                           child: Container(
                             height: 52,
                             decoration: BoxDecoration(
@@ -253,7 +335,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'नया पंजीकरण (Register)',
+                                  isEnglish ? 'Register' : 'नया पंजीकरण',
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
@@ -272,9 +354,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           onTap: () {
                             setState(() {
                               _isRegisterMode = false;
+                              _customError = null;
                             });
                           },
-                          borderRadius: BorderRadius.circular(Sizes.radius - 4),
+                          borderRadius:
+                              BorderRadius.circular(Sizes.radius - 4),
                           child: Container(
                             height: 52,
                             decoration: BoxDecoration(
@@ -297,7 +381,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'लॉग इन (Login)',
+                                  isEnglish ? 'Login' : 'लॉग इन',
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
@@ -317,11 +401,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
                 const SizedBox(height: Sizes.gapLarge),
 
-                // 1. Name Input Field (Register mode only)
+                // Name Input Field
                 if (_isRegisterMode) ...[
-                  const Text(
-                    'कारीगर का पूरा नाम (Full Name) *',
-                    style: TextStyle(
+                  Text(
+                    isEnglish ? 'Full Name *' : 'कारीगर का पूरा नाम *',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                       color: Palette.ink,
@@ -343,7 +427,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         color: Palette.primary,
                         size: 28,
                       ),
-                      hintText: 'उदा. राम किशोर (e.g. Ram Kishore)',
+                      hintText: isEnglish
+                          ? 'e.g. Ram Kishore'
+                          : 'उदा. राम किशोर',
                       hintStyle: const TextStyle(
                         fontSize: 16,
                         color: Palette.muted,
@@ -379,10 +465,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   const SizedBox(height: Sizes.gapMedium),
                 ],
 
-                // 2. Phone Number Input Field (Both modes)
-                const Text(
-                  'मोबाइल नंबर (Mobile Number) *',
-                  style: TextStyle(
+                // Mobile Number Input Field
+                Text(
+                  isEnglish ? 'Mobile Number *' : 'मोबाइल नंबर *',
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
                     color: Palette.ink,
@@ -423,7 +509,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '🇮🇳 +91',
+                            '+91',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w800,
@@ -469,11 +555,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
                 const SizedBox(height: Sizes.gapMedium),
 
-                // 3. Craft Specialty Selection (Register mode only)
+                // Craft Selection
                 if (_isRegisterMode) ...[
-                  const Text(
-                    'आपकी शिल्प विधा (Your Craft Specialty)',
-                    style: TextStyle(
+                  Text(
+                    isEnglish ? 'Your Craft Specialty' : 'आपकी शिल्प विधा',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                       color: Palette.ink,
@@ -483,14 +569,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: _craftOptions.map((craft) {
-                      final isSelected = _selectedCraft == craft;
+                    children: craftOptions.map((craft) {
+                      final isSelected = activeCraft == craft;
                       return InkWell(
-                        onTap: () {
-                          setState(() {
-                            _selectedCraft = craft;
-                          });
-                        },
+                        onTap: () => setState(() => _selectedCraft = craft),
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
@@ -527,8 +609,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ] else
                   const SizedBox(height: Sizes.gapMedium),
 
-                // Error Message Card (if validation fails)
-                if (authState.errorMessage != null) ...[
+                // Error Message Notice
+                if (displayedError != null) ...[
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -546,7 +628,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            authState.errorMessage!,
+                            displayedError,
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
@@ -560,18 +642,20 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   const SizedBox(height: Sizes.gapMedium),
                 ],
 
-                // 4. Primary Submit / Continue Button (96dp target)
+                // Primary Action Button
                 SpokenActionButton(
                   onPressed: authState.isLoading ? null : _submit,
                   icon: _isRegisterMode
                       ? Icons.check_circle_rounded
                       : Icons.arrow_forward_rounded,
                   label: authState.isLoading
-                      ? 'सत्यापित कर रहे हैं... (Verifying...)'
+                      ? (isEnglish ? 'Verifying...' : 'सत्यापित कर रहे हैं...')
                       : _isRegisterMode
-                          ? 'शुरू करें • Register & Enter'
-                          : 'लॉग इन करें • Login & Enter',
-                  subtitle: 'Directly opens camera capture studio',
+                          ? (isEnglish ? 'Get Started' : 'शुरू करें')
+                          : (isEnglish ? 'Log In' : 'लॉग इन करें'),
+                  subtitle: isEnglish
+                      ? 'Opens camera capture studio'
+                      : 'कैमरा स्टूडियो खुलेगा',
                   backgroundColor: _isRegisterMode
                       ? Palette.affirm
                       : Palette.primary,

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shilpsetu/core/localization/language_provider.dart';
 import 'package:shilpsetu/core/theme/tokens.dart';
 import 'package:shilpsetu/features/auth/presentation/auth_screen.dart';
 import 'package:shilpsetu/features/capture/presentation/capture_screen.dart';
 import 'package:shilpsetu/features/catalog/presentation/catalog_screen.dart';
 import 'package:shilpsetu/features/cataloger/presentation/cataloger_screen.dart';
 import 'package:shilpsetu/features/enquiries/presentation/enquiries_screen.dart';
+import 'package:shilpsetu/features/home/presentation/home_screen.dart';
+import 'package:shilpsetu/features/language/presentation/language_selection_screen.dart';
 import 'package:shilpsetu/features/pricing/presentation/pricing_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -14,8 +17,13 @@ final routerProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: '/auth',
+    initialLocation: '/language',
     routes: [
+      GoRoute(
+        path: '/language',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const LanguageSelectionScreen(),
+      ),
       GoRoute(
         path: '/auth',
         parentNavigatorKey: rootNavigatorKey,
@@ -26,6 +34,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           return _ScaffoldWithNavBar(navigationShell: navigationShell);
         },
         branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: HomeScreen(),
+                ),
+              ),
+            ],
+          ),
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -72,13 +90,16 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-class _ScaffoldWithNavBar extends StatelessWidget {
+class _ScaffoldWithNavBar extends ConsumerWidget {
   const _ScaffoldWithNavBar({required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lang = ref.watch(languageProvider).selectedLanguage;
+    final isEnglish = lang == AppLanguage.english;
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: Container(
@@ -99,7 +120,7 @@ class _ScaffoldWithNavBar extends StatelessWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
             height: 76,
-            indicatorColor: Palette.primary.withValues(alpha: 0.12),
+            indicatorColor: Palette.purpleContainerLight,
             selectedIndex: navigationShell.currentIndex,
             onDestinationSelected: (index) {
               navigationShell.goBranch(
@@ -107,33 +128,42 @@ class _ScaffoldWithNavBar extends StatelessWidget {
                 initialLocation: index == navigationShell.currentIndex,
               );
             },
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.camera_alt_outlined, size: 28),
-                selectedIcon: Icon(
+                icon: const Icon(Icons.home_outlined, size: 28),
+                selectedIcon: const Icon(
+                  Icons.home_rounded,
+                  size: 30,
+                  color: Palette.purpleContainerDark,
+                ),
+                label: isEnglish ? 'Home' : 'होम',
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.camera_alt_outlined, size: 28),
+                selectedIcon: const Icon(
                   Icons.camera_alt_rounded,
                   size: 30,
-                  color: Palette.primary,
+                  color: Palette.purpleContainerDark,
                 ),
-                label: 'फ़ोटो (Capture)',
+                label: isEnglish ? 'Capture' : 'फ़ोटो',
               ),
               NavigationDestination(
-                icon: Icon(Icons.grid_view_outlined, size: 28),
-                selectedIcon: Icon(
+                icon: const Icon(Icons.grid_view_outlined, size: 28),
+                selectedIcon: const Icon(
                   Icons.grid_view_rounded,
                   size: 30,
-                  color: Palette.primary,
+                  color: Palette.purpleContainerDark,
                 ),
-                label: 'उत्पाद (Catalog)',
+                label: isEnglish ? 'Catalog' : 'उत्पाद',
               ),
               NavigationDestination(
-                icon: Icon(Icons.mark_chat_unread_outlined, size: 28),
-                selectedIcon: Icon(
+                icon: const Icon(Icons.mark_chat_unread_outlined, size: 28),
+                selectedIcon: const Icon(
                   Icons.mark_chat_unread_rounded,
                   size: 30,
-                  color: Palette.primary,
+                  color: Palette.purpleContainerDark,
                 ),
-                label: 'ऑर्डर (Orders)',
+                label: isEnglish ? 'Orders' : 'ऑर्डर',
               ),
             ],
           ),

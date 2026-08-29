@@ -73,15 +73,14 @@ class AuthController extends StateNotifier<AuthState> {
 
     state = state.copyWith(isLoading: true, clearError: true);
 
-    // Simulate network verification
     await Future<void>.delayed(const Duration(milliseconds: 400));
 
     final user = ArtisanUser(
       id: 'artisan_${DateTime.now().millisecondsSinceEpoch}',
       name: trimmedName,
       phoneNumber: cleanPhone,
-      craftType: craftType ?? 'हस्तशिल्प (Crafts)',
-      location: location ?? 'भारत (India)',
+      craftType: craftType ?? 'हस्तशिल्प',
+      location: location ?? 'भारत',
     );
 
     state = state.copyWith(
@@ -116,7 +115,7 @@ class AuthController extends StateNotifier<AuthState> {
       id: 'artisan_existing',
       name: (existingName?.isNotEmpty ?? false)
           ? existingName!
-          : 'कारीगर (Artisan)',
+          : 'कारीगर',
       phoneNumber: cleanPhone,
       craftType: 'हथकरघा एवं शिल्प',
     );
@@ -124,6 +123,50 @@ class AuthController extends StateNotifier<AuthState> {
     state = state.copyWith(
       isLoading: false,
       currentUser: user,
+      isAuthenticated: true,
+      clearError: true,
+    );
+
+    return true;
+  }
+
+  /// Updates artisan profile name and phone number.
+  Future<bool> updateProfile({
+    required String name,
+    required String phoneNumber,
+    String? craftType,
+  }) async {
+    final trimmedName = name.trim();
+    final cleanPhone = phoneNumber.replaceAll(RegExp(r'\D'), '');
+
+    if (!isValidName(trimmedName)) {
+      state = state.copyWith(
+        errorMessage: 'कृपया सही नाम दर्ज करें',
+      );
+      return false;
+    }
+
+    if (!isValidPhoneNumber(cleanPhone)) {
+      state = state.copyWith(
+        errorMessage: 'कृपया 10 अंकों का वैध मोबाइल नंबर दर्ज करें',
+      );
+      return false;
+    }
+
+    state = state.copyWith(isLoading: true, clearError: true);
+
+    final currentUser = state.currentUser;
+    final updatedUser = ArtisanUser(
+      id: currentUser?.id ?? 'artisan_user',
+      name: trimmedName,
+      phoneNumber: cleanPhone,
+      craftType: craftType ?? currentUser?.craftType ?? 'हस्तशिल्प',
+      location: currentUser?.location ?? 'भारत',
+    );
+
+    state = state.copyWith(
+      isLoading: false,
+      currentUser: updatedUser,
       isAuthenticated: true,
       clearError: true,
     );
